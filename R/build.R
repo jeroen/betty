@@ -1,21 +1,23 @@
-#' Build
+#' Betty Build
 #'
 #' Builds pkgdown site and source package from  a git remote and optionally
 #' publish it directly to \url{https://docs.ropensci.org}.
 #'
 #' @rdname build
-#' @name build
+#' @inheritParams deploy_site
 #' @param remote url of the git remote
 #' @param dest path of volume to save docs and src output
-#' @param deploy publish website on docs.ropensci.org
 #' @export
-build_site <- function(remote, dest = ".", deploy = FALSE){
+#' @examples \dontrun{
+#' build_site('https://github.com/ropensci/magick')
+#' }
+build_site <- function(remote, dest = ".", deploy_org = "ropensci-docs", deploy_url = 'https://docs.ropensci.org'){
   doc_dir <- paste0(dest, "/docs/")
   src_dir <- paste0(dest, "/src/")
 
   # Clone the URL and change dir
   src <- tempfile()
-  gert::git_clone(remote, src)
+  gert::git_clone(remote, src, verbose = TRUE)
   pwd <- getwd()
   on.exit(setwd(pwd))
   setwd(src)
@@ -30,7 +32,7 @@ build_site <- function(remote, dest = ".", deploy = FALSE){
 
   # Build the website
   title <- sprintf("rOpenSci: %s", pkg)
-  url <- sprintf("https://docs.ropensci.org/%s", pkg)
+  url <- paste0(deploy_url, "/", pkg)
   dest <- paste0(doc_dir, pkg)
   tmp <- paste0(dest, "_TMP")
   template <- list(package = "rotemplate")
@@ -53,9 +55,9 @@ build_site <- function(remote, dest = ".", deploy = FALSE){
   file.copy(pkgfile, src_dir)
   tools::write_PACKAGES(src_dir)
 
-  if(isTRUE(deploy))
-    deploy_site(dest)
+  if(length(deploy_org) && !is.na(deploy_org))
+    deploy_site(dest, deploy_org = deploy_org, deploy_url = deploy_url)
 
   # Return the website dir
-  return(dest)
+  invisible(dest)
 }
