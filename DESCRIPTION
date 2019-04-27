@@ -1,0 +1,24 @@
+Package: betty
+Type: Package
+Title: Betty Builder builds Stuff
+Version: 0.1
+Authors@R: person("Jeroen", "Ooms", ,"jeroen@berkeley.edu", role = c("aut", "cre"),
+    comment = c(ORCID = "0000-0002-4035-0289"))
+Description: Tools for automatically building and publishing rOpenSci packages and
+    documentation.
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    gh,
+    gert,
+    jsonlite,
+    remotes,
+    pkgbuild,
+    pkgdown,
+    rotemplate
+Remotes: 
+    r-lib/gert,
+    r-lib/pkgdown,
+    ropensci/rotemplate
+RoxygenNote: 6.1.1
+License: MIT + file LICENSE
