@@ -37,6 +37,9 @@ build_site <- function(remote, dest = ".", deploy_url = 'https://docs.ropensci.o
   tmp <- paste0(dest, "_TMP")
   template <- list(package = "rotemplate")
   unlink(tmp, recursive = TRUE)
+
+  # Remove temp site in case of failure
+  on.exit(unlink(tmp, recursive = TRUE))
   pkgdown::build_site(document = FALSE, preview = FALSE, override =
     list(destination = tmp, title = title, url = url, template = template))
 
@@ -45,16 +48,14 @@ build_site <- function(remote, dest = ".", deploy_url = 'https://docs.ropensci.o
   jsonlite::write_json(list(commit = as.list(head), remote = remote, pkg = pkg),
                        file.path(tmp, 'info.json'), auto_unbox = TRUE)
 
-  # Move site to final location
-  unlink(dest, recursive = TRUE)
-  file.rename(tmp, dest)
-
   # Store the source pkg and update repo (todo: use cranlike)
   dir.create(src_dir, showWarnings = FALSE)
   unlink(sprintf("%s%s_*.tar.gz", src_dir, pkg))
   file.copy(pkgfile, src_dir)
   tools::write_PACKAGES(src_dir)
 
-  # Return the website dir
+  # Move site to final location
+  unlink(dest, recursive = TRUE)
+  file.rename(tmp, dest)
   invisible(dest)
 }
