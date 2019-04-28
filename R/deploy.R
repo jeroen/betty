@@ -63,10 +63,8 @@ deploy_site <- function(path, deploy_org, deploy_url = NULL){
 #' @rdname deploy
 #' @param doc_root directory in which your websites are stored
 #' @param site_root base url under which sites are hosted
-#' @param filter which packages to deploy. Defaults to all.
-deploy_all_sites <- function(doc_root, deploy_org = 'ropensci-docs',
-                             site_root = 'https://docs.ropensci.org', filter = "*"){
-  sites <- list.files(doc_root, pattern = sprintf("/%s$", filter), full.names = TRUE)
+deploy_all_sites <- function(doc_root, deploy_org = 'ropensci-docs', site_root = 'https://docs.ropensci.org'){
+  sites <- list.files(doc_root, full.names = TRUE)
   sites <- grep("_TMP$", sites, value = TRUE, invert = TRUE)
   lapply(sites, function(path){
     deploy_url <- paste0(site_root, "/", basename(path))

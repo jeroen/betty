@@ -8,7 +8,7 @@
 deploy_site(path, deploy_org, deploy_url = NULL)
 
 deploy_all_sites(doc_root, deploy_org = "ropensci-docs",
-  site_root = "https://docs.ropensci.org", filter = "*")
+  site_root = "https://docs.ropensci.org")
 }
 \arguments{
 \item{path}{local path of the website root directory}
@@ -21,8 +21,6 @@ Defaults to `https://{deploy_org}.github.io/pkg`.}
 \item{doc_root}{directory in which your websites are stored}
 
 \item{site_root}{base url under which sites are hosted}
-
-\item{filter}{which packages to deploy. Defaults to all.}
 }
 \description{
 Publish a local site or all sites in a given directory to a github org. Set
