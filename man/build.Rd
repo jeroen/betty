@@ -4,7 +4,7 @@
 \alias{build_site}
 \title{Betty Build}
 \usage{
-build_site(remote, dest = ".", deploy_org = "ropensci-docs",
+build_site(remote, dest = ".",
   deploy_url = "https://docs.ropensci.org")
 }
 \arguments{
@@ -12,10 +12,8 @@ build_site(remote, dest = ".", deploy_org = "ropensci-docs",
 
 \item{dest}{path of volume to save docs and src output}
 
-\item{deploy_org}{name of github organization to publish gh-pages repo}
-
 \item{deploy_url}{optional base domain name under which sites will be hosted.
-Defaults to `https://{deploy_org}.github.io`.}
+Defaults to `https://{deploy_org}.github.io/pkg`.}
 }
 \description{
 Builds pkgdown site and source package from  a git remote and optionally

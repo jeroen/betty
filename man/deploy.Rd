@@ -2,9 +2,13 @@
 % Please edit documentation in R/deploy.R
 \name{deploy_site}
 \alias{deploy_site}
+\alias{deploy_all_sites}
 \title{Betty Deploy}
 \usage{
 deploy_site(path, deploy_org, deploy_url = NULL)
+
+deploy_all_sites(doc_root, deploy_org = "ropensci-docs",
+  site_root = "https://docs.ropensci.org", filter = "*")
 }
 \arguments{
 \item{path}{local path of the website root directory}
@@ -12,9 +16,15 @@ deploy_site(path, deploy_org, deploy_url = NULL)
 \item{deploy_org}{name of github organization to publish gh-pages repo}
 
 \item{deploy_url}{optional base domain name under which sites will be hosted.
-Defaults to `https://{deploy_org}.github.io`.}
+Defaults to `https://{deploy_org}.github.io/pkg`.}
+
+\item{doc_root}{directory in which your websites are stored}
+
+\item{site_root}{base url under which sites are hosted}
+
+\item{filter}{which packages to deploy. Defaults to all.}
 }
 \description{
-Publish a local site to our ropensci-docs github org. Make sure you have
+Publish a local site or all sites in a given directory to a github org. Set
 a valid `GITHUB_PAT` token in your environment to use this non-interactively.
 }

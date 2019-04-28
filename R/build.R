@@ -11,7 +11,7 @@
 #' @examples \dontrun{
 #' build_site('https://github.com/ropensci/magick')
 #' }
-build_site <- function(remote, dest = ".", deploy_org = "ropensci-docs", deploy_url = 'https://docs.ropensci.org'){
+build_site <- function(remote, dest = ".", deploy_url = 'https://docs.ropensci.org'){
   doc_dir <- paste0(dest, "/docs/")
   src_dir <- paste0(dest, "/src/")
 
@@ -54,9 +54,6 @@ build_site <- function(remote, dest = ".", deploy_org = "ropensci-docs", deploy_
   unlink(sprintf("%s%s_*.tar.gz", src_dir, pkg))
   file.copy(pkgfile, src_dir)
   tools::write_PACKAGES(src_dir)
-
-  if(length(deploy_org) && !is.na(deploy_org))
-    deploy_site(dest, deploy_org = deploy_org, deploy_url = deploy_url)
 
   # Return the website dir
   invisible(dest)
