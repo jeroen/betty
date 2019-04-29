@@ -63,7 +63,7 @@ build_site <- function(remote, dest = ".", deploy_url = 'https://docs.ropensci.o
 #' @export
 #' @rdname build
 build_all_sites <- function(dest = "."){
-  registry <- "https://raw.githubusercontent.com/ropensci/roregistry/master/registry.json"
+  registry <- "https://ropensci.github.io/roregistry/registry.json"
   packages <- jsonlite::fromJSON(registry)$packages
   success <- vector("list", 10)
   for(i in 1:nrow(packages)){
