@@ -68,7 +68,11 @@ build_all_sites <- function(dest = "."){
   success <- vector("list", 10)
   for(i in 1:nrow(packages)){
     url <- packages[i, "url"]
-    success[[i]] <- tryCatch(build_site(url, dest = dest), error = function(e){e$msg})
+    success[[i]] <- tryCatch(build_site(url, dest = dest), error = function(e){
+      cat(sprintf("Failure for: %s:\n", url))
+      print(e)
+      return(e$message)
+    })
   }
   names(success) <- packages$name
   jsonlite::write_json(success, file.path(dest, 'build.json'), auto_unbox = TRUE)
