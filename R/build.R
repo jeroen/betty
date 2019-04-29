@@ -24,8 +24,10 @@ build_site <- function(remote, dest = ".", deploy_url = 'https://docs.ropensci.o
   if(!file.exists('DESCRIPTION'))
     stop("Remote does not contain an R package")
 
-  if(!("readme.md" %in% tolower(list.files())))
-    stop("Package does not contain a readme.md file")
+  # From pkgdown build_home_index()
+  home_files <- c("index.Rmd", "README.Rmd", "index.md", "README.md")
+  if(!any(file.exists(home_files)))
+    stop("Package does not contain an index.(r)md or README.(r)md file")
 
   # Install package locally
   remotes::install_deps(dependencies = TRUE, upgrade = TRUE)
