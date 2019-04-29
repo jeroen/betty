@@ -25,7 +25,7 @@ build_site <- function(remote, dest = ".", deploy_url = 'https://docs.ropensci.o
     stop("Remote does not contain an R package")
 
   if(!("readme.md" %in% tolower(list.files())))
-    stop("Pakage does not contain a readme.md file")
+    stop("Package does not contain a readme.md file")
 
   # Install package locally
   remotes::install_deps(dependencies = TRUE, upgrade = TRUE)
