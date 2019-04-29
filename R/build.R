@@ -59,3 +59,16 @@ build_site <- function(remote, dest = ".", deploy_url = 'https://docs.ropensci.o
   file.rename(tmp, dest)
   invisible(dest)
 }
+
+#' @export
+#' @rdname build
+build_all_sites <- function(dest = "."){
+  registry <- "https://raw.githubusercontent.com/ropensci/roregistry/master/registry.json"
+  packages <- jsonlite::fromJSON(registry)$packages
+  success <- vector("list", 10)
+  for(i in 1:nrow(packages)){
+    url <- packages[i, "url"]
+    success[[i]] <- tryCatch(build_site(url, dest = dest), error = function(e){e$msg})
+  }
+  structure(success, names = packages$name)
+}
