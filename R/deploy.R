@@ -16,6 +16,10 @@ deploy_site <- function(path, deploy_org, deploy_url = NULL){
   commit_message <- sprintf('Render from %s (%s...)', commit_url,
                             substring(trimws(info$commit$message), 1, 25))
 
+  # Variables
+  git_user <- Sys.getenv("GIT_USER", "ropenscibot")
+  git_email <- Sys.getenv("GIT_EMAIL", "myrmecocystus+ropenscibot@gmail.com")
+
   # Change to the repo dir for gert
   pwd <- getwd()
   on.exit(setwd(pwd))
@@ -30,8 +34,8 @@ deploy_site <- function(path, deploy_org, deploy_url = NULL){
 
   # Init a git repo
   gert::git_init()
-  gert::git_config_set('user.name', "ropenscibot")
-  gert::git_config_set('user.email', "myrmecocystus+ropenscibot@gmail.com")
+  gert::git_config_set('user.name', git_user)
+  gert::git_config_set('user.email', git_email)
   gert::git_add(".")
   if(nrow(gert::git_status()) == 0){
     cat(sprintf("git repo %s already seems up-to-date\n", pkg), file = stderr())
