@@ -30,6 +30,7 @@ build_site <- function(remote, dest = ".", deploy_url = 'https://docs.ropensci.o
     stop("Package does not contain an index.(r)md or README.(r)md file")
 
   # Install package locally
+  setRepositories(ind = 1:4)
   remotes::install_deps(dependencies = TRUE, upgrade = TRUE)
   pkgfile <- pkgbuild::build(dest_path = tempdir())
   remotes::install_local(pkgfile, build = FALSE)
