@@ -30,8 +30,8 @@ deploy_site <- function(path, deploy_org, deploy_url = NULL){
 
   # Init a git repo
   gert::git_init()
-  gert::git_config_set('user.name', "Betty Builder")
-  gert::git_config_set('user.email', "noreply@ropensci.org")
+  gert::git_config_set('user.name', "ropenscibot")
+  gert::git_config_set('user.email', "myrmecocystus+ropenscibot@gmail.com")
   gert::git_add(".")
   if(nrow(gert::git_status()) == 0){
     cat(sprintf("git repo %s already seems up-to-date\n", pkg), file = stderr())
