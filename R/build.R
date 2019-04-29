@@ -29,6 +29,9 @@ build_site <- function(remote, dest = ".", deploy_url = 'https://docs.ropensci.o
   if(!any(file.exists(home_files)))
     stop("Package does not contain an index.(r)md or README.(r)md file")
 
+  if(file.exists('.norodocs'))
+    stop("Package contains a '.norodocs' file, not generating docs")
+
   # Install package locally
   setRepositories(ind = 1:4)
   remotes::install_deps(dependencies = TRUE, upgrade = TRUE)
