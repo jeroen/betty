@@ -55,7 +55,7 @@ build_site <- function(remote, dest = ".", deploy_url = 'https://docs.ropensci.o
   # Save some info about the repo
   head <- gert::git_log(max = 1, repo = src)
   jsonlite::write_json(list(commit = as.list(head), remote = remote, pkg = pkg),
-                       file.path(tmp, 'info.json'), auto_unbox = TRUE)
+                       file.path(tmp, 'info.json'), pretty = TRUE, auto_unbox = TRUE)
 
   # Store the source pkg and update repo (todo: use cranlike)
   dir.create(src_dir, showWarnings = FALSE)
@@ -84,5 +84,5 @@ build_all_sites <- function(dest = "."){
     })
   }
   names(success) <- packages$name
-  jsonlite::write_json(success, file.path(dest, 'build.json'), auto_unbox = TRUE)
+  jsonlite::write_json(success, file.path(dest, 'build.json'), pretty = TRUE, auto_unbox = TRUE)
 }
