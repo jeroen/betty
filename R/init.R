@@ -1,5 +1,5 @@
 .onLoad <- function(libname, pkgname){
-  options(menu.graphics = FALSE)
+  options(menu.graphics = FALSE, pkgdown.timeout = 3600)
   dir.create("~/.R", showWarnings = FALSE)
   file.create("~/.R/Makevars", showWarnings = FALSE)
 
