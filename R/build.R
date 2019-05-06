@@ -12,6 +12,7 @@
 #' build_site('https://github.com/ropensci/magick')
 #' }
 build_site <- function(remote, dest = ".", deploy_url = 'https://docs.ropensci.org'){
+  dest <- normalizePath(dest, mustWork = TRUE)
   doc_dir <- paste0(dest, "/docs/")
   src_dir <- paste0(dest, "/src/")
 
