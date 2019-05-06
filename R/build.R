@@ -19,7 +19,7 @@ build_site <- function(remote, dest = ".", deploy_url = 'https://docs.ropensci.o
   src <- tempfile()
   gert::git_clone(remote, src, verbose = TRUE)
   pwd <- getwd()
-  on.exit(setwd(pwd))
+  on.exit(setwd(pwd), add = TRUE)
   setwd(src)
   if(!file.exists('DESCRIPTION'))
     stop("Remote does not contain an R package")
@@ -48,7 +48,7 @@ build_site <- function(remote, dest = ".", deploy_url = 'https://docs.ropensci.o
   unlink(tmp, recursive = TRUE)
 
   # Remove temp site in case of failure
-  on.exit(unlink(tmp, recursive = TRUE))
+  on.exit(unlink(tmp, recursive = TRUE), add = TRUE)
   pkgdown::build_site(document = FALSE, preview = FALSE, override =
     list(destination = tmp, title = title, url = url, template = template))
 

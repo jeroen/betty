@@ -22,7 +22,7 @@ deploy_site <- function(path, deploy_org, deploy_url = NULL){
 
   # Change to the repo dir for gert
   pwd <- getwd()
-  on.exit(setwd(pwd))
+  on.exit(setwd(pwd), add = TRUE)
   setwd(path)
 
   # Metadata
