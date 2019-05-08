@@ -5,20 +5,27 @@
 #'
 #' @rdname build
 #' @inheritParams deploy_site
-#' @param remote url of the git remote
+#' @param repo either local path or remote url of the git repository
 #' @param dest path of volume to save docs and src output
 #' @export
 #' @examples \dontrun{
 #' build_site('https://github.com/ropensci/magick')
 #' }
-build_site <- function(remote, dest = ".", deploy_url = 'https://docs.ropensci.org'){
+build_site <- function(repo, dest = ".", deploy_url = 'https://docs.ropensci.org'){
   dest <- normalizePath(dest, mustWork = TRUE)
   doc_dir <- paste0(dest, "/docs/")
   src_dir <- paste0(dest, "/src/")
 
-  # Clone the URL and change dir
-  src <- tempfile()
-  gert::git_clone(remote, src, verbose = TRUE)
+  # Either clone or open the Git repo
+  if(grepl("^(https://|git@)", repo)){
+    remote <- repo
+    src <- tempfile()
+    gert::git_clone(remote, path = src, verbose = TRUE)
+  } else {
+    src <- normalizePath(repo, mustWork = TRUE)
+    remote <- gert::git_remote_list(src)$url[1]
+  }
+
   pwd <- getwd()
   on.exit(setwd(pwd), add = TRUE)
   setwd(src)

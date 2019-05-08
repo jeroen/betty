@@ -5,13 +5,12 @@
 \alias{build_all_sites}
 \title{Betty Build}
 \usage{
-build_site(remote, dest = ".",
-  deploy_url = "https://docs.ropensci.org")
+build_site(repo, dest = ".", deploy_url = "https://docs.ropensci.org")
 
 build_all_sites(dest = ".")
 }
 \arguments{
-\item{remote}{url of the git remote}
+\item{repo}{either local path or remote url of the git repository}
 
 \item{dest}{path of volume to save docs and src output}
 
