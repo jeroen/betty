@@ -43,7 +43,7 @@ build_site <- function(repo, dest = ".", deploy_url = 'https://docs.ropensci.org
   # Install package locally
   setRepositories(ind = 1:4)
   remotes::install_deps(dependencies = TRUE, upgrade = TRUE)
-  pkgfile <- pkgbuild::build(dest_path = tempdir())
+  pkgfile <- pkgbuild::build(dest_path = tempdir(), vignettes = FALSE)
   remotes::install_local(pkgfile, build = FALSE)
   pkg <- strsplit(basename(pkgfile), "_", fixed = TRUE)[[1]][1]
 
