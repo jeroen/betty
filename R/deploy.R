@@ -11,7 +11,7 @@
 #' Defaults to `https://{deploy_org}.github.io/pkg`.
 deploy_site <- function(path, deploy_org, deploy_url = NULL){
   # Load metadata
-  info <- jsonlite::fromJSON(file.path(path, 'info.json'))
+  info <- jsonlite::read_json(file.path(path, 'info.json'))
   commit_url <- paste0(info$remote, "/commit/", substring(info$commit$commit,1,7))
   commit_message <- sprintf('Render from %s (%s...)', commit_url,
                             substring(trimws(info$commit$message), 1, 25))
