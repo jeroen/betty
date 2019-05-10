@@ -42,6 +42,9 @@ build_site <- function(repo, dest = ".", deploy_url = 'https://docs.ropensci.org
 
   # Install package locally
   setRepositories(ind = 1:4)
+
+  # Extra packages
+  try(install_travis_packages())
   remotes::install_deps(dependencies = TRUE, upgrade = TRUE)
   pkgfile <- pkgbuild::build(dest_path = tempdir(), vignettes = FALSE)
   remotes::install_local(pkgfile, build = FALSE)
@@ -93,4 +96,17 @@ build_all_sites <- function(dest = "."){
   }
   names(success) <- packages$name
   jsonlite::write_json(success, file.path(dest, 'build.json'), pretty = TRUE, auto_unbox = TRUE)
+}
+
+install_travis_packages <- function(){
+  if(file.exists('.travis.yml')){
+    travis_config <- yaml::read_yaml('.travis.yml')
+    extra_pkgs <- c(travis_config$r_packages, travis_config$bioc_packages)
+    if(length(extra_pkgs)){
+      install.packages(extra_pkgs)
+    }
+    if(length(travis_config$r_github_packages)){
+      remotes::install_github(travis_config$r_github_packages, upgrade = FALSE)
+    }
+  }
 }

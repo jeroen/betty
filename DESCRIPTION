@@ -15,7 +15,8 @@ Imports:
     remotes,
     pkgbuild,
     pkgdown,
-    rotemplate
+    rotemplate,
+    yaml
 Remotes: 
     r-lib/gert,
     r-lib/pkgdown,
