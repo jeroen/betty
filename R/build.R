@@ -14,7 +14,7 @@
 build_site <- function(repo, dest = ".", deploy_url = 'https://docs.ropensci.org'){
   dest <- normalizePath(dest, mustWork = TRUE)
   doc_dir <- paste0(dest, "/docs/")
-  src_dir <- paste0(dest, "/src/")
+  src_dir <- paste0(dest, "/src/contrib/")
 
   # Either clone or open the Git repo
   if(grepl("^(https://|git@)", repo)){
@@ -69,7 +69,7 @@ build_site <- function(repo, dest = ".", deploy_url = 'https://docs.ropensci.org
                        file.path(tmp, 'info.json'), pretty = TRUE, auto_unbox = TRUE)
 
   # Store the source pkg and update repo (todo: use cranlike)
-  dir.create(src_dir, showWarnings = FALSE)
+  dir.create(src_dir, showWarnings = FALSE, recursive = TRUE)
   unlink(sprintf("%s%s_*.tar.gz", src_dir, pkg))
   file.copy(pkgfile, src_dir)
   tools::write_PACKAGES(src_dir)
