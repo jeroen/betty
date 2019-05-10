@@ -103,7 +103,7 @@ install_travis_packages <- function(){
     travis_config <- yaml::read_yaml('.travis.yml')
     extra_pkgs <- c(travis_config$r_packages, travis_config$bioc_packages)
     if(length(extra_pkgs)){
-      remotes::install_cran(extra_pkgs)
+      remotes::install_cran(extra_pkgs, upgrade = FALSE)
     }
     if(length(travis_config$r_github_packages)){
       remotes::install_github(travis_config$r_github_packages, upgrade = FALSE)
