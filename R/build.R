@@ -47,7 +47,7 @@ build_site <- function(repo, dest = ".", deploy_url = 'https://docs.ropensci.org
   try(install_travis_packages())
   remotes::install_deps(dependencies = TRUE, upgrade = TRUE)
   pkgfile <- pkgbuild::build(dest_path = tempdir(), vignettes = FALSE)
-  remotes::install_local(pkgfile, build = FALSE)
+  install.packages(pkgfile, repos = NULL)
   pkg <- strsplit(basename(pkgfile), "_", fixed = TRUE)[[1]][1]
 
   # Build the website
