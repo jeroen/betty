@@ -2,6 +2,10 @@
 
 export(build_all_sites)
 export(build_site)
+export(config_template)
 export(deploy_all_sites)
 export(deploy_site)
 export(remove_deleted_docs)
+export(sync_jenkins_ropensci)
+export(view_template)
+importFrom(jenkins,jenkins)
