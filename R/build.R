@@ -41,13 +41,13 @@ build_site <- function(repo, dest = ".", deploy_url = 'https://docs.ropensci.org
     stop("Package contains a '.norodocs' file, not generating docs")
 
   # Install package locally
-  setRepositories(ind = 1:4)
+  utils::setRepositories(ind = 1:4)
 
   # Extra packages
   #try(install_travis_packages())
   remotes::install_deps(dependencies = TRUE, upgrade = TRUE)
   pkgfile <- pkgbuild::build(dest_path = tempdir(), vignettes = FALSE)
-  install.packages(pkgfile, repos = NULL)
+  utils::install.packages(pkgfile, repos = NULL)
   pkg <- strsplit(basename(pkgfile), "_", fixed = TRUE)[[1]][1]
 
   # Build the website

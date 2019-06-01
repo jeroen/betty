@@ -72,7 +72,7 @@ remove_deleted_docs <- function(){
   docs <- list_all_docs()
   pkgs <- docs[!(docs %in% c(packages$name, 'ropensci-docs.github.io'))]
   cat("Removed packages: ", paste(pkgs, collapse = ', '), "\n")
-  if(askYesNo("are you sure you want to delete these?")){
+  if(utils::askYesNo("are you sure you want to delete these?")){
     lapply(pkgs, function(name){
       message("Deleting: ", name)
       gh::gh(paste0('/repos/ropensci-docs/', name), .method = 'DELETE')

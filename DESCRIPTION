@@ -17,6 +17,7 @@ Imports:
     pkgbuild,
     pkgdown (>= 1.3.0.9100),
     rotemplate,
+    stringi,    
     yaml
 Remotes: 
     jeroen/jenkins,
