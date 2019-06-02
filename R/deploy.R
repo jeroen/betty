@@ -46,6 +46,7 @@ deploy_site <- function(path, deploy_org, deploy_url = NULL){
   gert::git_branch_create("gh-pages")
 
   # Create repo if needed and push
+  # Note: this should no longer be needed, we create repos now in sync_ropensci_docs
   info <- tryCatch(gh::gh(paste0("/repos/", deploy_repo)), http_error_404 = function(e){
     cat(sprintf("Creating new repo %s\n", deploy_repo))
     gh::gh(paste0("/orgs/", deploy_org, "/repos"), .method = "POST",
