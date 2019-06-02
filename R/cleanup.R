@@ -1,6 +1,7 @@
 #' Sync rOpenSci with Jenkins
 #'
-#' Add or delelte docs for removed packages
+#' Checks the rOpenSci registery and add/delete corresponding projects on Jenkins
+#' and the ropensci-docs repositories on Github.
 #'
 #' @export
 #' @rdname sync_ropensci
@@ -8,7 +9,7 @@
 #' @param update_jobs update the xml config of existing repos.
 #' @param remove_jobs delete jobs that are no longer in the registry
 #' @param update_views update the views (per-author package list)
-sync_jenkins_ropensci <- function(update_jobs = FALSE, remove_jobs = TRUE, update_views = TRUE){
+sync_ropensci_jenkins <- function(update_jobs = FALSE, remove_jobs = TRUE, update_views = TRUE){
   jk <- jenkins::jenkins('http://jenkins.ropensci.org')
   jobs <- jk$job_list()
   url <- "https://ropensci.github.io/roregistry/registry.json"
@@ -67,17 +68,35 @@ sync_jenkins_ropensci <- function(update_jobs = FALSE, remove_jobs = TRUE, updat
 
 #' @export
 #' @rdname sync_ropensci
-remove_deleted_docs <- function(){
-  packages <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")$packages
-  docs <- list_all_docs()
-  pkgs <- docs[!(docs %in% c(packages$name, 'ropensci-docs.github.io'))]
-  cat("Removed packages: ", paste(pkgs, collapse = ', '), "\n")
-  if(utils::askYesNo("are you sure you want to delete these?")){
-    lapply(pkgs, function(name){
-      message("Deleting: ", name)
-      gh::gh(paste0('/repos/ropensci-docs/', name), .method = 'DELETE')
-    })
+sync_ropensci_docs <- function(){
+  registry <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")
+  packages <- c(registry$packages$name, 'ropensci-docs.github.io')
+  repos <- list_all_docs()
+  added <- packages[!(packages %in% repos)]
+  if(length(added)){
+    cat("Adding new packages: ", paste(added, collapse = ', '), "\n")
+    if(utils::askYesNo("are you sure you want to add these packages?")){
+      lapply(added, function(name){
+        message("Creating: ropensci-docs/", name)
+        description <- paste0('auto-generated pkgdown website for: ', name)
+        homepage <- paste0("https://docs.ropensci.org/", name)
+        gh::gh('/orgs/ropensci-docs/repos', .method = 'POST',
+               name = name, description = description, homepage = homepage,
+               has_issues = FALSE, has_wiki = FALSE)
+      })
+    }
   }
+  deleted <- repos[!(repos %in% packages)]
+  if(length(deleted)){
+    cat("Removed packages: ", paste(deleted, collapse = ', '), "\n")
+    if(utils::askYesNo("are you sure you want to delete these?")){
+      lapply(deleted, function(name){
+        message("Deleting: ropensci-docs/", name)
+        gh::gh(paste0('/repos/ropensci-docs/', name), .method = 'DELETE')
+      })
+    }
+  }
+  message("Everything in sync!")
   invisible()
 }
 
@@ -119,4 +138,3 @@ list_all_docs <- function(){
 asciify <- function(x){
   gsub("[^a-zA-Z0-9' .-]", "", stringi::stri_trans_general(x, "latin-ascii"))
 }
-
