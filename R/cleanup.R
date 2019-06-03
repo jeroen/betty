@@ -20,13 +20,13 @@ sync_ropensci_jenkins <- function(update_jobs = FALSE, remove_jobs = TRUE, updat
     if(name %in% jobs$name){
       if(isTRUE(update_jobs)){
         cat(sprintf("Updating job config for %s...", name))
-        jk$project_update(name = name, xml_string = xml)
+        jk$project_update(name, xml_string = xml)
       } else {
         cat(sprintf("Job config for %s already exists...", name))
       }
     } else {
       cat(sprintf("Creating new job for %s...", name))
-      jk$project_create(name = name, xml_string = xml)
+      jk$project_create(name, xml_string = xml)
     }
     cat("OK!\n")
   }
@@ -49,10 +49,10 @@ sync_ropensci_jenkins <- function(update_jobs = FALSE, remove_jobs = TRUE, updat
       xml <- view_template(pkg_names)
       if(author %in% views$name){
         cat(sprintf("Updating view for %s...", author))
-        jk$view_update(name = author, xml_string = xml)
+        jk$view_update(author, xml_string = xml)
       } else {
         cat(sprintf("Creating new view for %s...", author))
-        jk$view_create(name = author, xml_string = xml)
+        jk$view_create(author, xml_string = xml)
       }
       cat("OK!\n")
     })
@@ -122,16 +122,8 @@ view_template <- function(view_jobs){
 }
 
 list_all_docs <- function(){
-  page <- 1
-  repos <- NULL
-  repeat {
-    out <- gh::gh(paste0('/orgs/ropensci-docs/repos?per_page=100&page=', page))
-    names <- unlist(lapply(out, `[[`, 'name'))
-    repos <- c(repos, names)
-    if(length(names) < 100)
-      return(repos)
-    page <- page + 1
-  }
+  out <- gh::gh('/orgs/ropensci-docs/repos?per_page=100', .limit = 1e6)
+  unlist(lapply(out, `[[`, 'name'))
 }
 
 # Not sure how well jenkins deals with strange characters...
