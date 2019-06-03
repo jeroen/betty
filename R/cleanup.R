@@ -11,7 +11,7 @@
 #' @param update_views update the views (per-author package list)
 sync_ropensci_jenkins <- function(update_jobs = FALSE, remove_jobs = TRUE, update_views = TRUE){
   jk <- jenkins::jenkins('http://jenkins.ropensci.org')
-  jobs <- jk$job_list()
+  jobs <- jk$project_list()
   url <- "https://ropensci.github.io/roregistry/registry.json"
   packages <- jsonlite::fromJSON(url)$packages
   for(i in seq_len(nrow(packages))){
@@ -20,13 +20,13 @@ sync_ropensci_jenkins <- function(update_jobs = FALSE, remove_jobs = TRUE, updat
     if(name %in% jobs$name){
       if(isTRUE(update_jobs)){
         cat(sprintf("Updating job config for %s...", name))
-        jk$job_update(name = name, xml_string = xml)
+        jk$project_update(name = name, xml_string = xml)
       } else {
         cat(sprintf("Job config for %s already exists...", name))
       }
     } else {
       cat(sprintf("Creating new job for %s...", name))
-      jk$job_create(name = name, xml_string = xml)
+      jk$project_create(name = name, xml_string = xml)
     }
     cat("OK!\n")
   }
@@ -34,7 +34,7 @@ sync_ropensci_jenkins <- function(update_jobs = FALSE, remove_jobs = TRUE, updat
     gone <- !(jobs$name %in% packages$name)
     lapply(jobs$name[gone], function(name){
       cat(sprintf("Deleting job %s which is no longer in the roregistry...", name))
-      jk$job_delete(name)
+      jk$project_delete(name)
       cat("OK!\n")
     })
   }
@@ -63,7 +63,7 @@ sync_ropensci_jenkins <- function(update_jobs = FALSE, remove_jobs = TRUE, updat
       cat("OK!\n")
     })
   }
-  invisible(jk$info())
+  invisible(jk$server_info())
 }
 
 #' @export
