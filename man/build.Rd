@@ -14,8 +14,7 @@ build_all_sites(dest = ".")
 
 \item{dest}{path of volume to save docs and src output}
 
-\item{deploy_url}{optional base domain name under which sites will be hosted.
-Defaults to `https://{deploy_org}.github.io/pkg`.}
+\item{deploy_url}{optional base domain name under which sites will be hosted.}
 }
 \description{
 Builds pkgdown site and source package from  a git remote and optionally

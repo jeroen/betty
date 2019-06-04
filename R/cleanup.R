@@ -76,14 +76,7 @@ sync_ropensci_docs <- function(){
   if(length(added)){
     cat("Adding new packages: ", paste(added, collapse = ', '), "\n")
     if(utils::askYesNo("are you sure you want to add these packages?")){
-      lapply(added, function(name){
-        message("Creating: ropensci-docs/", name)
-        description <- paste0('auto-generated pkgdown website for: ', name)
-        homepage <- paste0("https://docs.ropensci.org/", name)
-        gh::gh('/orgs/ropensci-docs/repos', .method = 'POST',
-               name = name, description = description, homepage = homepage,
-               has_issues = FALSE, has_wiki = FALSE)
-      })
+      lapply(added, create_new_docs_repo)
     }
   }
   deleted <- repos[!(repos %in% packages)]
@@ -119,6 +112,15 @@ view_template <- function(view_jobs){
   input <- rawToChar(readBin(template, raw(), file.info(template)$size))
   jobstring <- paste(sprintf('    <string>%s</string>', view_jobs), collapse = "\n")
   gsub("INSERT_VIEW_JOBS", jobstring, input, fixed = TRUE)
+}
+
+create_new_docs_repo <- function(name){
+  message("Creating: ropensci-docs/", name)
+  description <- paste0('auto-generated pkgdown website for: ', name)
+  homepage <- paste0("https://docs.ropensci.org/", name)
+  gh::gh('/orgs/ropensci-docs/repos', .method = 'POST',
+         name = name, description = description, homepage = homepage,
+         has_issues = FALSE, has_wiki = FALSE)
 }
 
 list_all_docs <- function(){

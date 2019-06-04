@@ -7,6 +7,7 @@
 #' @inheritParams deploy_site
 #' @param repo either local path or remote url of the git repository
 #' @param dest path of volume to save docs and src output
+#' @param deploy_url optional base domain name under which sites will be hosted.
 #' @export
 #' @examples \dontrun{
 #' build_site('https://github.com/ropensci/magick')
