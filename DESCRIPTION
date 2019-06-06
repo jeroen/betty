@@ -22,7 +22,6 @@ Imports:
 Remotes: 
     r-lib/gert,
     r-lib/pkgdown,
-    ropensci/jenkins,
     ropensci/rotemplate
 RoxygenNote: 6.1.1
 License: MIT + file LICENSE
