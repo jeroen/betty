@@ -3,6 +3,7 @@
 \name{sync_ropensci_jenkins}
 \alias{sync_ropensci_jenkins}
 \alias{sync_ropensci_docs}
+\alias{list_ropensci_docs_repos}
 \alias{config_template}
 \alias{view_template}
 \title{Sync rOpenSci with Jenkins}
@@ -11,6 +12,8 @@ sync_ropensci_jenkins(update_jobs = FALSE, remove_jobs = TRUE,
   update_views = TRUE)
 
 sync_ropensci_docs()
+
+list_ropensci_docs_repos(active_only = TRUE)
 
 config_template(git_url)
 
@@ -22,6 +25,8 @@ view_template(view_jobs)
 \item{remove_jobs}{delete jobs that are no longer in the registry}
 
 \item{update_views}{update the views (per-author package list)}
+
+\item{active_only}{only list repositories which have content in them}
 
 \item{git_url}{HTTPS git url of the target repository}
 

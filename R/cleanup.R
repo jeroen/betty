@@ -94,6 +94,30 @@ sync_ropensci_docs <- function(){
 }
 
 #' @export
+#' @rdname sync_ropensci
+#' @param active_only only list repositories which have content in them
+list_ropensci_docs_repos <- function(active_only = TRUE){
+  repos <- gh::gh('/users/ropensci-docs/repos?per_page=100', .limit = 1e6)
+  if(active_only){
+    repos <- Filter(function(x){
+      created_at <- parse_time(x$created_at)
+      pushed_at <- parse_time(x$pushed_at)
+      abs(pushed_at - created_at) > 1
+    }, repos)
+  }
+  repos
+}
+
+list_all_docs <- function(){
+  out <- list_ropensci_docs_repos(active_only = FALSE)
+  unlist(lapply(out, `[[`, 'name'))
+}
+
+parse_time <- function(str){
+  strptime(str, '%Y-%m-%dT%H:%M:%SZ', tz = 'UTC')
+}
+
+#' @export
 #' @param git_url HTTPS git url of the target repository
 #' @rdname sync_ropensci
 config_template <- function(git_url){
@@ -121,11 +145,6 @@ create_new_docs_repo <- function(name){
   gh::gh('/orgs/ropensci-docs/repos', .method = 'POST',
          name = name, description = description, homepage = homepage,
          has_issues = FALSE, has_wiki = FALSE)
-}
-
-list_all_docs <- function(){
-  out <- gh::gh('/orgs/ropensci-docs/repos?per_page=100', .limit = 1e6)
-  unlist(lapply(out, `[[`, 'name'))
 }
 
 # Not sure how well jenkins deals with strange characters...
