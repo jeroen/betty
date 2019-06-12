@@ -1,3 +1,4 @@
+# ghrecipes lives at github.com/ropenscilabs/ghrecipes
 docs <- gh::gh('/users/ropensci-docs/repos?per_page=100', .limit = 1000)
 repos <- ghrecipes::get_repos("ropensci")
 repos2 <- ghrecipes::get_repos("ropenscilabs")
