@@ -46,6 +46,7 @@ build_site <- function(repo, dest = ".", deploy_url = 'https://docs.ropensci.org
 
   # Extra packages
   #try(install_travis_packages())
+  Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS=TRUE)
   remotes::install_deps(dependencies = TRUE, upgrade = TRUE)
   pkgfile <- pkgbuild::build(dest_path = tempdir(), vignettes = FALSE)
   utils::install.packages(pkgfile, repos = NULL)
