@@ -20,7 +20,6 @@ Imports:
     stringi,    
     yaml
 Remotes: 
-    r-lib/gert,
     r-lib/pkgdown,
     ropensci/rotemplate
 RoxygenNote: 6.1.1
