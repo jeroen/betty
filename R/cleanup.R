@@ -27,6 +27,7 @@ sync_ropensci_jenkins <- function(update_jobs = FALSE, remove_jobs = TRUE, updat
     } else {
       cat(sprintf("Creating new job for %s...", name))
       jk$project_create(name, xml_string = xml)
+      jk$project_build(name)
     }
     cat("OK!\n")
   }
