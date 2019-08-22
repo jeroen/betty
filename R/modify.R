@@ -11,7 +11,8 @@ modify_readme <- function(file, pkg, git_url = ""){
   }
 
   cat("Replacing H1 line\n")
-  title <- ifelse(length(h1$title) && !is.na(h1$title), h1$title, pkg)
+  title <- sprintf('the *%s* package', pkg)
+  #title <- ifelse(length(h1$title) && !is.na(h1$title), h1$title, sprintf('the __%s__ package', pkg))
 
   banner <- if(isTRUE(grepl('ropenscilabs', git_url))){
     ropensci_labs_banner(title)
