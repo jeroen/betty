@@ -24,6 +24,8 @@ modify_readme <- function(file, pkg, git_url = ""){
     readme <- c(banner, readme)
   } else {
     readme[h1$pos] <- banner
+    if(isTRUE(grepl("^[= ]+$", readme[h1$pos + 1])))
+       readme[h1$pos + 1] = ""
   }
   writeLines(readme, file)
 }
