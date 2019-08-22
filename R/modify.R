@@ -2,19 +2,28 @@
 #'
 #' Hack some stuff into the readme file
 #'
-modify_readme <- function(file, pkg){
+modify_readme <- function(file, pkg, git_url = ""){
   readme <- readLines(file)
   h1_line <- find_h1_line(readme)
-  if(is.na(h1_line)){
-    readme <- c(ropensci_banner(pkg), readme)
+  banner <- if(grepl('ropenscilabs', git_url)){
+    ropensci_labs_banner(pkg)
   } else {
-    readme[h1_line] <- ropensci_banner(pkg)
+    ropensci_main_banner(pkg)
+  }
+  if(is.na(h1_line)){
+    readme <- c(banner, readme)
+  } else {
+    readme[h1_line] <- banner
   }
   writeLines(readme, file)
 }
 
-ropensci_banner <- function(pkg){
+ropensci_main_banner <- function(pkg){
   sprintf('# rOpenSci: %s <img src="hexlogo.png" align="right" height="134.5" />', pkg)
+}
+
+ropensci_labs_banner <- function(pkg){
+  sprintf('# rOpenSci Labs: %s <img src="labs.png" align="right" height="134.5" />', pkg)
 }
 
 find_h1_line <- function(txt){

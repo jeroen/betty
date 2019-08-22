@@ -12,7 +12,7 @@
 #' @examples \dontrun{
 #' build_site('https://github.com/ropensci/magick')
 #' }
-build_site <- function(repo, dest = ".", git_url = NULL, deploy_url = 'https://docs.ropensci.org'){
+build_site <- function(repo, dest = ".", git_url = "", deploy_url = 'https://docs.ropensci.org'){
   dest <- normalizePath(dest, mustWork = TRUE)
   doc_dir <- paste0(dest, "/docs/")
   src_dir <- paste0(dest, "/src/contrib/")
@@ -54,7 +54,7 @@ build_site <- function(repo, dest = ".", git_url = NULL, deploy_url = 'https://d
   pkg <- strsplit(basename(pkgfile), "_", fixed = TRUE)[[1]][1]
 
   # Hack the readme
-  lapply(home_files, modify_readme, pkg = pkg)
+  lapply(home_files, modify_readme, pkg = pkg, git_url = git_url)
 
   # Build the website
   title <- sprintf("rOpenSci: %s", pkg)
