@@ -5,7 +5,7 @@
 modify_readme <- function(file, pkg, git_url = ""){
   readme <- readLines(file)
   h1 <- find_h1_line(readme)
-  if(isTRUE(grepl('<img', h1$input))){
+  if(isTRUE(grepl("(<img|!\\[)", h1$input))){
     cat("Found an image in H1, not replacing title line\n");
     return()
   }
