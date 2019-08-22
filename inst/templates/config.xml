@@ -74,7 +74,7 @@ if [ -f &quot;.Renviron&quot; ]; then
 ENVVAR_FILE=&quot;--env-file=.Renviron&quot;
 fi
 docker pull ropensci/docs
-ID=$(docker create --rm $ENVVAR_FILE $ENABLE_CACHE $ENABLE_STORE ropensci/docs build &quot;/$BASENAME&quot;)
+ID=$(docker create --rm $ENVVAR_FILE $ENABLE_CACHE $ENABLE_STORE ropensci/docs build &quot;/$BASENAME&quot; &quot;$GIT_URL&quot;)
 docker cp $PWD &quot;$ID:/$BASENAME&quot;
 docker start $ID --attach
 if [ &quot;$GIT_BRANCH&quot; = &quot;origin/master&quot; ]; then
