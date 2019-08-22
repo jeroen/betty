@@ -5,16 +5,17 @@
 modify_readme <- function(file, pkg, git_url = ""){
   readme <- readLines(file)
   h1 <- find_h1_line(readme)
-  if(isTRUE(grepl("(<img|!\\[)", h1$input))){
+  is_labs <- isTRUE(grepl('ropenscilabs', git_url))
+  if(!is_labs && isTRUE(grepl("(<img|!\\[)", h1$input))){
     cat("Found an image in H1, not replacing title line\n");
     return()
   }
 
   cat("Replacing H1 line\n")
-  title <- sprintf('The {%s} package', pkg)
+  title <- pkg
   #title <- ifelse(length(h1$title) && !is.na(h1$title), h1$title, sprintf('the __%s__ package', pkg))
 
-  banner <- if(isTRUE(grepl('ropenscilabs', git_url))){
+  banner <- if(is_labs){
     ropensci_labs_banner(title)
   } else {
     ropensci_main_banner(title)
@@ -28,11 +29,11 @@ modify_readme <- function(file, pkg, git_url = ""){
 }
 
 ropensci_main_banner <- function(title){
-  sprintf('# rOpenSci: %s <img src="hexlogo.png" align="right" height="134.5" />', title)
+  sprintf('# rOpenSci: The {%s} package <img src="hexlogo.png" align="right" height="134.5" />', title)
 }
 
 ropensci_labs_banner <- function(title){
-  sprintf('# rOpenSci Labs: %s <img src="labs.png" align="right" height="134.5" />', title)
+  sprintf('# Experimental Package: {%s} <img src="labs.png" align="right" height="134.5" />', title)
 }
 
 find_h1_line <- function(txt){
