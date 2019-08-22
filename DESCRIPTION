@@ -9,6 +9,7 @@ Description: Tools for automatically building and publishing rOpenSci packages a
 Encoding: UTF-8
 LazyData: true
 Imports: 
+    commonmark,
     gh,
     gert,
     jenkins,
@@ -17,7 +18,8 @@ Imports:
     pkgbuild,
     pkgdown (>= 1.3.0.9100),
     rotemplate,
-    stringi,    
+    stringi,
+    xml2,
     yaml
 Remotes: 
     r-lib/pkgdown,

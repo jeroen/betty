@@ -33,13 +33,14 @@ build_site <- function(repo, dest = ".", deploy_url = 'https://docs.ropensci.org
   if(!file.exists('DESCRIPTION'))
     stop("Remote does not contain an R package")
 
-  # From pkgdown build_home_index()
-  home_files <- c("index.Rmd", "README.Rmd", "index.md", "README.md")
-  if(!any(file.exists(home_files)))
-    stop("Package does not contain an index.(r)md or README.(r)md file")
-
   if(file.exists('.norodocs'))
     stop("Package contains a '.norodocs' file, not generating docs")
+
+  # From pkgdown build_home_index()
+  home_files <- c("index.Rmd", "README.Rmd", "index.md", "README.md")
+  home_files <- Filter(file.exists, home_files)
+  if(!length(home_files))
+    stop("Package does not contain an index.(r)md or README.(r)md file")
 
   # Install package locally
   utils::setRepositories(ind = 1:4)
@@ -51,6 +52,9 @@ build_site <- function(repo, dest = ".", deploy_url = 'https://docs.ropensci.org
   pkgfile <- pkgbuild::build(dest_path = tempdir(), vignettes = FALSE)
   utils::install.packages(pkgfile, repos = NULL)
   pkg <- strsplit(basename(pkgfile), "_", fixed = TRUE)[[1]][1]
+
+  # Hack the readme
+  lapply(home_files, modify_readme, pkg = pkg)
 
   # Build the website
   title <- sprintf("rOpenSci: %s", pkg)
