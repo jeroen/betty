@@ -44,6 +44,7 @@ build_site <- function(repo, dest = ".", git_url = "", deploy_url = 'https://doc
 
   # Install package locally
   utils::setRepositories(ind = 1:4)
+  options(repos = c("rOpenSci" = 'https://dev.ropensci.org', getOption('repos')))
 
   # Extra packages
   #try(install_travis_packages())
