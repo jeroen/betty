@@ -31,11 +31,11 @@ modify_readme <- function(file, pkg, git_url = ""){
 }
 
 ropensci_main_banner <- function(title){
-  sprintf('# rOpenSci: {%s} <img src="hexlogo.png" align="right" height="134.5" />', title)
+  sprintf('# rOpenSci: The *%s* package <img src="hexlogo.png" align="right" height="134.5" />', title)
 }
 
 ropensci_labs_banner <- function(title){
-  sprintf('# Experimental Package: {%s} <img src="labs.png" align="right" height="134.5" />', title)
+  sprintf('# rOpenSci Labs: *%s* <img src="https://github.com/ropenscilabs.png" align="right" height="134.5" />', title)
 }
 
 find_h1_line <- function(txt){

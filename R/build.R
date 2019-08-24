@@ -62,7 +62,8 @@ build_site <- function(repo, dest = ".", git_url = "", deploy_url = 'https://doc
   url <- paste0(deploy_url, "/", pkg)
   dest <- paste0(doc_dir, pkg)
   tmp <- paste0(dest, "_TMP")
-  template <- list(package = "rotemplate")
+  template <- if(!isTRUE(grepl('ropenscilabs', git_url)))
+                 list(package = "rotemplate")
   unlink(tmp, recursive = TRUE)
 
   # Remove temp site in case of failure
