@@ -35,7 +35,7 @@ ropensci_main_banner <- function(title){
 }
 
 ropensci_labs_banner <- function(title){
-  sprintf('# rOpenSci Labs: *%s* <img src="https://github.com/ropenscilabs.png" align="right" height="134.5" />', title)
+  sprintf('# rOpenSci Labs: *%s* <small>(unofficial community project)</small> <img src="https://github.com/ropenscilabs.png" align="right" height="134.5" />', title)
 }
 
 find_h1_line <- function(txt){
