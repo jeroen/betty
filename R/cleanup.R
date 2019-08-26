@@ -69,7 +69,7 @@ sync_ropensci_jenkins <- function(update_jobs = FALSE, remove_jobs = TRUE, updat
 
 #' @export
 #' @rdname sync_ropensci
-sync_ropensci_docs <- function(){
+sync_ropensci_docs <- function(update_sitemap = TRUE){
   registry <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")
   packages <- c(registry$packages$name, 'ropensci-docs.github.io')
   repos <- list_all_docs()
@@ -91,6 +91,10 @@ sync_ropensci_docs <- function(){
     }
   }
   message("Everything in sync!")
+  if(isTRUE(update_sitemap)){
+    message("Updating sitemap...")
+    sync_sitemap()
+  }
   invisible()
 }
 
@@ -112,6 +116,29 @@ list_ropensci_docs_repos <- function(active_only = TRUE){
 list_all_docs <- function(){
   out <- list_ropensci_docs_repos(active_only = FALSE)
   unlist(lapply(out, `[[`, 'name'))
+}
+
+generate_sitemap_xml <- function(){
+  sites <- list_all_docs()
+  body <- sprintf("  <url>\n    <loc>https://docs.ropensci.org/%s/</loc>\n  </url>", sites)
+  paste(c('<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    body, '</urlset>'), collapse = '\n')
+}
+
+sync_sitemap <- function(){
+  xml <- generate_sitemap_xml()
+  tmpdir <- tempfile()
+  repo <- gert::git_clone('https://github.com/ropensci-docs/ropensci-docs.github.io', tmpdir)
+  sitemap <- file.path(tmpdir, 'sitemap.xml')
+  writeLines(xml, sitemap)
+  gert::git_add('sitemap.xml', repo = repo)
+  if(any(gert::git_status(repo = repo)$staged)){
+    gert::git_commit(sprintf("Update sitemap (%s)", Sys.Date()), repo = repo)
+    gert::git_push(repo = repo)
+  } else {
+    message("No changes in sitemap")
+  }
 }
 
 parse_time <- function(str){
