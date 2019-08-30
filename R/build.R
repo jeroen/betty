@@ -68,7 +68,7 @@ build_site <- function(repo, dest = ".", git_url = "", deploy_url = 'https://doc
 
   # Remove temp site in case of failure
   on.exit(unlink(tmp, recursive = TRUE), add = TRUE)
-  pkgdown::build_site(devel = FALSE, preview = FALSE, override =
+  pkgdown::build_site(devel = FALSE, preview = FALSE, install = FALSE, override =
     list(destination = tmp, title = title, url = url, template = template))
   file.create(file.path(tmp, '.nojekyll'))
 
