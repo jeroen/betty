@@ -16,13 +16,12 @@ Imports:
     jsonlite,
     remotes,
     pkgbuild,
-    pkgdown (>= 1.3.9900),
+    pkgdown (>= 1.4.0),
     rotemplate,
     stringi,
     xml2,
     yaml
 Remotes: 
-    r-lib/pkgdown,
     ropensci/rotemplate
 RoxygenNote: 6.1.1
 License: MIT + file LICENSE
