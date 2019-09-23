@@ -5,7 +5,7 @@
 </description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <hudson.plugins.jira.JiraProjectProperty plugin="jira@3.0.7"/>
+    <hudson.plugins.jira.JiraProjectProperty plugin="jira@3.0.9"/>
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
         <daysToKeep>-1</daysToKeep>
@@ -18,8 +18,18 @@
       <projectUrl>INSERT_GIT_REPO_URL</projectUrl>
       <displayName></displayName>
     </com.coravy.hudson.plugins.github.GithubProjectProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.BooleanParameterDefinition>
+          <name>DISABLE_AUTO_FLUSH</name>
+          <description>Do not automatically flush the package cache on a rebuild.
+</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.10.0">
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.12.1">
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
@@ -73,7 +83,11 @@ echo &quot;GIT_BRANCH: $GIT_BRANCH&quot;
 if [ &quot;$GIT_BRANCH&quot; = &quot;origin/master&quot; ]; then
 if git log -n1 | grep &quot;flushcache&quot;; then
 echo &quot;Flushing the cache!&quot;
-docker volume rm ${BASENAME}_cache
+docker volume rm ${BASENAME}_cache || true
+fi
+if [ &quot;$GIT_COMMIT&quot; = &quot;$GIT_PREVIOUS_COMMIT&quot; ] &amp;&amp; [ &quot;$DISABLE_AUTO_FLUSH&quot; = &quot;false&quot; ]; then
+echo &quot;Fresh rebuild: flushing the cache!&quot;
+docker volume rm ${BASENAME}_cache || true
 fi
 ENABLE_CACHE=&quot;--env R_LIBS_USER=/cache -v ${BASENAME}_cache:/cache&quot;
 ENABLE_STORE=&quot;-v data:/data&quot;
