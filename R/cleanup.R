@@ -70,6 +70,9 @@ sync_ropensci_jenkins <- function(update_jobs = FALSE, remove_jobs = TRUE, updat
 #' @export
 #' @rdname sync_ropensci
 sync_ropensci_docs <- function(update_sitemap = TRUE){
+  if(is.na(Sys.getenv('GITHUB_PAT', NA))){
+    credentials::set_github_pat()
+  }
   registry <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")
   packages <- c(registry$packages$name, 'ropensci-docs.github.io')
   repos <- list_all_docs()

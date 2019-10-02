@@ -9,6 +9,7 @@ Description: Tools for automatically building and publishing rOpenSci packages a
 Encoding: UTF-8
 LazyData: true
 Imports: 
+    credentials,
     commonmark,
     gh,
     gert,
