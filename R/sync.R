@@ -75,7 +75,7 @@ sync_ropensci_docs <- function(update_sitemap = TRUE){
   }
   registry <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")
   packages <- c(registry$packages$name, 'ropensci-docs.github.io')
-  repos <- list_all_docs()
+  repos <- get_docs_repos()
   added <- packages[!(packages %in% repos)]
   if(length(added)){
     cat("Adding new packages: ", paste(added, collapse = ', '), "\n")
@@ -104,7 +104,7 @@ sync_ropensci_docs <- function(update_sitemap = TRUE){
 #' @export
 #' @rdname sync_ropensci
 #' @param active_only only list repositories which have content in them
-list_ropensci_docs_repos <- function(active_only = TRUE){
+list_ropensci_docs_repos <- function(active_only = FALSE){
   repos <- gh::gh('/users/ropensci-docs/repos?per_page=100', .limit = 1e6)
   if(active_only){
     repos <- Filter(function(x){
@@ -116,26 +116,34 @@ list_ropensci_docs_repos <- function(active_only = TRUE){
   repos
 }
 
-list_all_docs <- function(){
-  out <- list_ropensci_docs_repos(active_only = FALSE)
+get_docs_repos <- function(active_only = FALSE){
+  out <- list_ropensci_docs_repos(active_only = active_only)
   unlist(lapply(out, `[[`, 'name'))
 }
 
-generate_sitemap_xml <- function(){
-  sites <- list_all_docs()
+update_sitemap <- function(path){
+  sites <- get_docs_repos(active_only = TRUE)
+
+  # Generate sitemap.xml
   body <- sprintf("  <url>\n    <loc>https://docs.ropensci.org/%s/</loc>\n  </url>", sites)
-  paste(c('<?xml version="1.0" encoding="UTF-8"?>',
+  sitemap <- paste(c('<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
     body, '</urlset>'), collapse = '\n')
+  writeLines(sitemap, file.path(path, 'sitemap.xml'))
+
+  # Generate index.html
+  template <- system.file('templates/index.html', package = 'betty')
+  input <- rawToChar(readBin(template, raw(), file.info(template)$size))
+  li <- sprintf('  <li><a href="https://docs.ropensci.org/%s/">%s</a></li>', sites, sites)
+  output <- sub('INSERT_REPO_LIST', paste(li, collapse = '\n'), input)
+  writeLines(output, file.path(path, 'index.html'))
 }
 
 sync_sitemap <- function(){
-  xml <- generate_sitemap_xml()
   tmpdir <- tempfile()
   repo <- gert::git_clone('https://github.com/ropensci-docs/ropensci-docs.github.io', tmpdir)
-  sitemap <- file.path(tmpdir, 'sitemap.xml')
-  writeLines(xml, sitemap)
-  gert::git_add('sitemap.xml', repo = repo)
+  update_sitemap(tmpdir)
+  gert::git_add(c('index.html', 'sitemap.xml'), repo = repo)
   if(any(gert::git_status(repo = repo)$staged)){
     gert::git_commit(sprintf("Update sitemap (%s)", Sys.Date()), repo = repo)
     gert::git_push(repo = repo)
