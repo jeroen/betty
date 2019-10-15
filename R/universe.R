@@ -11,7 +11,7 @@ update_universe <- function(remote, package = basename(remote), ref = 'master', 
   dest <- normalizePath(dest, mustWork = TRUE)
   universe <- file.path(dest, "universe")
   repo <- tryCatch({
-    gert::git_pull(repo = gert::git_open(universe))
+    gert::git_open(universe)
   }, error = function(e){
     gert::git_clone("https://github.com/r-universe/ropensci", universe)
   })
@@ -25,6 +25,11 @@ update_universe <- function(remote, package = basename(remote), ref = 'master', 
   gert::git_config_set('user.name', git_user)
   gert::git_config_set('user.email', git_email)
 
+  # Force sync with upstream: TODO: port to gert
+  sys::exec_internal("git", c("fetch", '--all'))
+  sys::exec_internal("git", c('reset', '--hard', 'origin/master'))
+
+  # Update the package submodule
   if(file.exists(package)){
     sys::exec_internal("git", c("submodule", "update", "--init", "--remote", package))
   } else {
