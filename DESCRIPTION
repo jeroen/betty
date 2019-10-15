@@ -20,9 +20,10 @@ Imports:
     pkgdown (>= 1.4.0),
     rotemplate,
     stringi,
+    sys,
     xml2,
     yaml
 Remotes: 
     ropensci/rotemplate
-RoxygenNote: 6.1.1
+RoxygenNote: 6.1.99.9001
 License: MIT + file LICENSE

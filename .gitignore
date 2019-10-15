@@ -5,4 +5,6 @@ inst/doc
 *.orig
 .env
 *.tex
+src
 docs
+universe
