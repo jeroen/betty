@@ -102,6 +102,7 @@ docker start $ID --attach
 if [ &quot;$GIT_BRANCH&quot; = &quot;origin/master&quot; ]; then
 echo &quot;Deploying to https://docs.ropensci.org&quot;
 docker run --rm --env-file=/var/jenkins_home/ghtoken.txt -v data:/data ropensci/docs deploy $PACKAGE
+docker run --rm --env-file=/var/jenkins_home/ghtoken.txt -v data:/data ropensci/docs universe $GIT_URL $PACKAGE $GIT_COMMIT
 else
 echo &quot;Skipping deployment for non-master branch&quot;
 fi
