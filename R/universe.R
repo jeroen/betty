@@ -8,7 +8,8 @@
 #' @param ref which branch or commit to checkout for this submodule
 #' @param dest root of the data drive
 update_universe <- function(remote, package = basename(remote), ref = 'master', dest = "."){
-  universe <- file.path(dest, "/universe")
+  dest <- normalizePath(dest, mustWork = TRUE)
+  universe <- file.path(dest, "universe")
   repo <- tryCatch({
     gert::git_pull(repo = gert::git_open(universe))
   }, error = function(e){
