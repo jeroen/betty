@@ -30,8 +30,8 @@ update_universe <- function(remote, package = basename(remote), ref = 'master', 
   sys::exec_internal("git", c('reset', '--hard', 'origin/master'))
 
   # Update the package submodule
-  if(file.exists(package)){
-    sys::exec_internal("git", c("submodule", "update", "--init", "--remote", package))
+  if(sys::exec_wait("git", c("submodule", "status", package)) == 0){
+    sys::exec_wait("git", c("submodule", "update", "--init", "--remote", package))
   } else {
     sys::exec_internal("git", c("submodule", "add", remote, package))
   }
