@@ -2,11 +2,13 @@
 commit_for_ropensci <- function(message){
   # Set author
   author_email <- Sys.getenv("GIT_EMAIL", NA)
+  author_date <- if(!is.na(Sys.getenv('GIT_TIMESTAMP', NA)))
+    structure(as.integer(Sys.getenv('GIT_TIMESTAMP')), class = c("POSIXct", "POSIXt"))
   author_sig <- if(is.na(author_email)){
     gert::git_signature_default()
   } else {
     author_name <- Sys.getenv('GIT_USER', 'rOpenSci user')
-    gert::git_signature(name = author_name, email = author_email)
+    gert::git_signature(name = author_name, email = author_email, time = author_date)
   }
 
   # Set the committer
