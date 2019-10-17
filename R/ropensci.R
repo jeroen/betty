@@ -10,7 +10,7 @@ commit_for_ropensci <- function(message){
   }
 
   # Set the committer
-  commit_sig <- gert::git_signature(name = 'rOpenSci', email = 'myrmecocystus+ropenscibot@gmail.com')
+  commit_sig <- gert::git_signature(name = 'rOpenSci', email = 'info@ropensci.org')
 
   # Add on trailer to message (only useful if commit is signed)
   # message <- paste0(message, "\n\n\non-behalf-of: @ropensci <info@ropensci.org>")
