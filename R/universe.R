@@ -16,24 +16,32 @@ update_universe <- function(remote, dirname = basename(remote), ref = 'master', 
     gert::git_clone("https://github.com/r-universe/ropensci", universe)
   })
 
+  # Set author signature
+  author_email <- Sys.getenv("GIT_EMAIL", NA)
+  author_sig <- if(is.na(author_email)){
+    git_signature_default()
+  } else {
+    author_name <- Sys.getenv('GIT_USER', 'rOpenSci user')
+    git_signature(name = name, email = author_email)
+  }
+
+  # Set the user signature
+  commit_sig <- git_signature(name = 'rOpenSci', email = 'myrmecocystus+ropenscibot@gmail.com')
+
   # Copied from deploy, todo: factor out
   pwd <- getwd()
   on.exit(setwd(pwd))
   setwd(universe)
-  git_user <- Sys.getenv("GIT_USER", "ropenscibot")
-  git_email <- Sys.getenv("GIT_EMAIL", "myrmecocystus+ropenscibot@gmail.com")
-  gert::git_config_set('user.name', git_user)
-  gert::git_config_set('user.email', git_email)
 
   # Force sync with upstream: TODO: port to gert
-  sys::exec_internal("git", c("fetch", '--all'))
-  sys::exec_internal("git", c('reset', '--hard', 'origin/master'))
+  sys::exec_wait("git", c("fetch", '--all'))
+  sys::exec_wait("git", c('reset', '--hard', 'origin/master'))
 
   # Initiate or update the package submodule
-  if(sys::exec_wait("git", c("submodule", "status", dirname)) == 0){
+  if(sys::exec_wait("git", c("submodule", "status", dirname), std_err = FALSE) == 0){
     sys::exec_wait("git", c("submodule", "update", "--init", "--remote", dirname))
   } else {
-    sys::exec_internal("git", c("submodule", "add", remote, dirname))
+    sys::exec_wait("git", c("submodule", "add", remote, dirname))
   }
   setwd(dirname)
   sys::exec_internal("git", c("checkout", ref))
@@ -45,7 +53,8 @@ update_universe <- function(remote, dirname = basename(remote), ref = 'master', 
   } else {
     package <- read.dcf(file.path(dirname, 'DESCRIPTION'))[[1,'Package']]
     version <- read.dcf(file.path(dirname, 'DESCRIPTION'))[[1,'Version']]
-    gert::git_commit(paste(package, version))
+    commit_msg <- paste(package, version, "\n\n\non-behalf-of: @ropensci <support@ropensci.org>")
+    gert::git_commit(message = commit_msg, author = author_sig, committer = commit_sig)
     gert::git_push()
   }
 }
