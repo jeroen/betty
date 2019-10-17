@@ -40,6 +40,7 @@ update_universe <- function(remote, dirname = basename(remote), ref = 'master', 
   } else {
     package <- read.dcf(file.path(dirname, 'DESCRIPTION'))[[1,'Package']]
     version <- read.dcf(file.path(dirname, 'DESCRIPTION'))[[1,'Version']]
+    gert::git_pull() # Minimize chance on race condition with other pkg
     commit_for_ropensci(message = paste(package, version))
     gert::git_push()
   }
