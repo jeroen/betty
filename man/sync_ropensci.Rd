@@ -29,6 +29,8 @@ view_template(view_jobs)
 
 \item{update_views}{update the views (per-author package list)}
 
+\item{update_sitemap}{generate updated sitemap.xml and index.html files}
+
 \item{active_only}{only list repositories which have content in them}
 
 \item{git_url}{HTTPS git url of the target repository}

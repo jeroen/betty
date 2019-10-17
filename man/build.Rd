@@ -19,6 +19,8 @@ build_all_sites(dest = ".")
 
 \item{dest}{path of volume to save docs and src output}
 
+\item{git_url}{full URL of the git remote (used to customize the template)}
+
 \item{deploy_url}{optional base domain name under which sites will be hosted.}
 }
 \description{

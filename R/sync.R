@@ -69,6 +69,7 @@ sync_ropensci_jenkins <- function(update_jobs = FALSE, remove_jobs = TRUE, updat
 
 #' @export
 #' @rdname sync_ropensci
+#' @param update_sitemap generate updated sitemap.xml and index.html files
 sync_ropensci_docs <- function(update_sitemap = TRUE){
   if(is.na(Sys.getenv('GITHUB_PAT', NA))){
     credentials::set_github_pat()

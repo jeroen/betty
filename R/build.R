@@ -4,7 +4,6 @@
 #' publish it directly to \url{https://docs.ropensci.org}.
 #'
 #' @rdname build
-#' @inheritParams deploy_site
 #' @param repo either local path or remote url of the git repository
 #' @param dest path of volume to save docs and src output
 #' @param git_url full URL of the git remote (used to customize the template)
