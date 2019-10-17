@@ -47,7 +47,6 @@ update_universe <- function(remote, dirname = basename(remote), ref = 'master', 
   sys::exec_internal("git", c("checkout", ref))
   setwd("..")
   gert::git_add(dirname)
-  gert::git_add(".")
   if(nrow(gert::git_status()) == 0){
     cat(sprintf("Submodule %s already seems up-to-date\n", dirname), file = stderr())
   } else {
