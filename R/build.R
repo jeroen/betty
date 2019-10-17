@@ -55,7 +55,7 @@ build_site <- function(repo, dest = ".", git_url = "", deploy_url = 'https://doc
   pkg <- strsplit(basename(pkgfile), "_", fixed = TRUE)[[1]][1]
 
   # Hack the readme
-  lapply(home_files, modify_readme, pkg = pkg, git_url = git_url)
+  lapply(home_files, modify_ropensci_readme, pkg = pkg, git_url = git_url)
 
   # Build the website
   title <- sprintf("rOpenSci: %s", pkg)

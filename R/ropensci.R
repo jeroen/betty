@@ -17,7 +17,7 @@ commit_for_ropensci <- function(message){
   gert::git_commit(message = commit_msg, author = author_sig, committer = commit_sig)
 }
 
-modify_readme <- function(file, pkg, git_url = ""){
+modify_ropensci_readme <- function(file, pkg, git_url = ""){
   readme <- readLines(file)
   h1 <- find_h1_line(readme)
   is_labs <- isTRUE(grepl('ropenscilabs', git_url))
