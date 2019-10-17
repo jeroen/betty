@@ -15,10 +15,6 @@ deploy_site <- function(path, deploy_org){
   commit_message <- sprintf('Render from %s (%s...)', commit_url,
                             substring(trimws(info$commit$message), 1, 25))
 
-  # Variables
-  git_user <- Sys.getenv("GIT_USER", "ropenscibot")
-  git_email <- Sys.getenv("GIT_EMAIL", "myrmecocystus+ropenscibot@gmail.com")
-
   # Change to the repo dir for gert
   pwd <- getwd()
   on.exit(setwd(pwd), add = TRUE)
@@ -31,14 +27,14 @@ deploy_site <- function(path, deploy_org){
 
   # Init a git repo
   gert::git_init()
-  gert::git_config_set('user.name', git_user)
-  gert::git_config_set('user.email', git_email)
   gert::git_add(".")
   if(nrow(gert::git_status()) == 0){
     cat(sprintf("git repo %s already seems up-to-date\n", pkg), file = stderr())
     return()
   }
-  gert::git_commit_all(commit_message)
+
+  # Todo: do we need git_commit_all() here?
+  commit_for_ropensci(commit_message)
   gert::git_remote_add('origin', deploy_remote)
   gert::git_branch_create("gh-pages")
 

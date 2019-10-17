@@ -16,18 +16,6 @@ update_universe <- function(remote, dirname = basename(remote), ref = 'master', 
     gert::git_clone("https://github.com/r-universe/ropensci", universe)
   })
 
-  # Set author signature
-  author_email <- Sys.getenv("GIT_EMAIL", NA)
-  author_sig <- if(is.na(author_email)){
-    git_signature_default()
-  } else {
-    author_name <- Sys.getenv('GIT_USER', 'rOpenSci user')
-    git_signature(name = name, email = author_email)
-  }
-
-  # Set the user signature
-  commit_sig <- git_signature(name = 'rOpenSci', email = 'myrmecocystus+ropenscibot@gmail.com')
-
   # Copied from deploy, todo: factor out
   pwd <- getwd()
   on.exit(setwd(pwd))
@@ -52,8 +40,7 @@ update_universe <- function(remote, dirname = basename(remote), ref = 'master', 
   } else {
     package <- read.dcf(file.path(dirname, 'DESCRIPTION'))[[1,'Package']]
     version <- read.dcf(file.path(dirname, 'DESCRIPTION'))[[1,'Version']]
-    commit_msg <- paste(package, version, "\n\n\non-behalf-of: @ropensci <support@ropensci.org>")
-    gert::git_commit(message = commit_msg, author = author_sig, committer = commit_sig)
+    commit_for_ropensci(message = paste(package, version))
     gert::git_push()
   }
 }
