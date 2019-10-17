@@ -4,12 +4,12 @@
 \alias{update_universe}
 \title{Update Universe}
 \usage{
-update_universe(remote, package = basename(remote), ref = "master", dest = ".")
+update_universe(remote, dirname = basename(remote), ref = "master", dest = ".")
 }
 \arguments{
 \item{remote}{URL of the upstream git repository to add}
 
-\item{package}{name of the package to add}
+\item{dirname}{name of the submodule to add}
 
 \item{ref}{which branch or commit to checkout for this submodule}
 
