@@ -12,9 +12,9 @@ commit_for_ropensci <- function(message){
   # Set the committer
   commit_sig <- gert::git_signature(name = 'rOpenSci', email = 'myrmecocystus+ropenscibot@gmail.com')
 
-  # Add on trailer to message
-  commit_msg <- paste0(message, "\n\n\non-behalf-of: @ropensci <support@ropensci.org>")
-  gert::git_commit(message = commit_msg, author = author_sig, committer = commit_sig)
+  # Add on trailer to message (only useful if commit is signed)
+  # message <- paste0(message, "\n\n\non-behalf-of: @ropensci <info@ropensci.org>")
+  gert::git_commit(message = message, author = author_sig, committer = commit_sig)
 }
 
 modify_ropensci_readme <- function(file, pkg, git_url = ""){
