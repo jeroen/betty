@@ -5,7 +5,7 @@
 </description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <hudson.plugins.jira.JiraProjectProperty plugin="jira@3.0.9"/>
+    <hudson.plugins.jira.JiraProjectProperty plugin="jira@3.0.10"/>
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
         <daysToKeep>-1</daysToKeep>
@@ -100,9 +100,15 @@ ID=$(docker create --rm $ENVVAR_FILE $ENABLE_CACHE $ENABLE_STORE ropensci/docs b
 docker cp $PWD &quot;$ID:/$BASENAME&quot;
 docker start $ID --attach
 if [ &quot;$GIT_BRANCH&quot; = &quot;origin/master&quot; ]; then
-echo &quot;Deploying to https://docs.ropensci.org&quot;
-docker run --rm --env-file=/var/jenkins_home/ghtoken.txt -v data:/data ropensci/docs deploy $PACKAGE
-docker run --rm --env-file=/var/jenkins_home/ghtoken.txt -v data:/data ropensci/docs universe $GIT_URL $PACKAGE $GIT_COMMIT
+echo &quot;Deploying to https://docs.ropensci.org...&quot;
+export GIT_USER=$(git show -s --format=&apos;%an&apos; $GIT_COMMIT)
+export GIT_EMAIL=$(git show -s --format=&apos;%ae&apos; $GIT_COMMIT)
+echo &quot;Deploy user: $GIT_USER &lt;$GIT_EMAIL&gt;&quot;
+docker run --rm -e GIT_USER -e GIT_EMAIL --env-file=/var/jenkins_home/ghtoken.txt -v data:/data ropensci/docs deploy $PACKAGE
+echo &quot;Docs deployment done!&quot;
+echo &quot;Updating r-universe...&quot;
+docker run --rm -e GIT_USER -e GIT_EMAIL --env-file=/var/jenkins_home/ghtoken.txt -v data:/data ropensci/docs universe $GIT_URL $PACKAGE $GIT_COMMIT
+echo &quot;Done!&quot;
 else
 echo &quot;Skipping deployment for non-master branch&quot;
 fi
