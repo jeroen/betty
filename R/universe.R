@@ -43,6 +43,7 @@ update_universe <- function(remote, dirname = basename(remote), ref = 'master', 
     subrepo <- gert::git_open(dirname)
     stopifnot(basename(gert::git_info(repo = subrepo)$path) == dirname)
     commit <- gert::git_log(repo = subrepo, max = 1)
+    gert::git_pull() # In case a concurrent package just pushed a commit
     commit_for_ropensci(message = paste(package, version), commit$author, commit$time)
     gert::git_push()
   }
