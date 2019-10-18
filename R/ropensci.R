@@ -1,18 +1,10 @@
 # Move rOpenSci specific stuff into this file
-commit_for_ropensci <- function(message){
+commit_for_ropensci <- function(message, author, time = NULL){
   # Set author
-  author_email <- Sys.getenv("GIT_EMAIL", NA)
-  timestamp <- if(!is.na(Sys.getenv('GIT_TIMESTAMP', NA)))
-    structure(as.integer(Sys.getenv('GIT_TIMESTAMP')), class = c("POSIXct", "POSIXt"))
-  author_sig <- if(is.na(author_email)){
-    gert::git_signature_default()
-  } else {
-    author_name <- Sys.getenv('GIT_USER', 'rOpenSci user')
-    gert::git_signature(name = author_name, email = author_email, time = timestamp)
-  }
-
-  # Set the committer
-  commit_sig <- gert::git_signature(name = 'rOpenSci', email = 'info@ropensci.org', time = timestamp)
+  author_name <- sub('^(.*)<(.*@.*)>$', '\\1', author)
+  author_email <- sub('^(.*)<(.*@.*)>$', '\\2', author)
+  author_sig <- gert::git_signature(name = author_name, email = author_email, time = time)
+  commit_sig <- gert::git_signature(name = 'rOpenSci', email = 'info@ropensci.org', time = time)
 
   # Add on trailer to message (only useful if commit is signed)
   # message <- paste0(message, "\n\n\non-behalf-of: @ropensci <info@ropensci.org>")

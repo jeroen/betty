@@ -40,7 +40,10 @@ update_universe <- function(remote, dirname = basename(remote), ref = 'master', 
   } else {
     package <- read.dcf(file.path(dirname, 'DESCRIPTION'))[[1,'Package']]
     version <- read.dcf(file.path(dirname, 'DESCRIPTION'))[[1,'Version']]
-    commit_for_ropensci(message = paste(package, version))
+    subrepo <- gert::git_open(dirname)
+    stopifnot(basename(gert::git_info(repo = subrepo)$path) == dirname)
+    commit <- gert::git_log(repo = subrepo, max = 1)
+    commit_for_ropensci(message = paste(package, version), commit$author, commit$time)
     gert::git_push()
   }
 }
