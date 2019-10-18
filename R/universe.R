@@ -34,6 +34,11 @@ update_universe <- function(remote, dirname = basename(remote), ref = 'master', 
   setwd(dirname)
   sys::exec_internal("git", c("checkout", ref))
   setwd("..")
+
+  # In case a concurrent package just pushed a commit
+  gert::git_pull()
+
+  # Update the submodule and commit
   gert::git_add(dirname)
   if(nrow(gert::git_status()) == 0){
     cat(sprintf("Submodule %s already seems up-to-date\n", dirname), file = stderr())
@@ -43,7 +48,6 @@ update_universe <- function(remote, dirname = basename(remote), ref = 'master', 
     subrepo <- gert::git_open(dirname)
     stopifnot(basename(gert::git_info(repo = subrepo)$path) == dirname)
     commit <- gert::git_log(repo = subrepo, max = 1)
-    gert::git_pull() # In case a concurrent package just pushed a commit
     commit_for_ropensci(message = paste(package, version), commit$author, commit$time)
     gert::git_push()
   }
