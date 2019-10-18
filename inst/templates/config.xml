@@ -101,15 +101,11 @@ docker cp $PWD &quot;$ID:/$BASENAME&quot;
 docker start $ID --attach
 if [ &quot;$GIT_BRANCH&quot; = &quot;origin/master&quot; ]; then
 echo &quot;Deploying to https://docs.ropensci.org...&quot;
-export GIT_USER=$(git show -s --format=&apos;%an&apos; $GIT_COMMIT)
-export GIT_EMAIL=$(git show -s --format=&apos;%ae&apos; $GIT_COMMIT)
-export GIT_TIMESTAMP=$(git show -s --format=&apos;%at&apos; $GIT_COMMIT)
-echo &quot;Deploy user: $GIT_USER &lt;$GIT_EMAIL&gt;&quot;
-docker run --rm -e GIT_USER -e GIT_EMAIL -e GIT_TIMESTAMP --env-file=/var/jenkins_home/ghtoken.txt -v data:/data ropensci/docs deploy $PACKAGE
+docker run --rm --env-file=/var/jenkins_home/ghtoken.txt -v data:/data ropensci/docs deploy $PACKAGE
 echo &quot;Docs deployment done!&quot;
 echo &quot;Updating r-universe...&quot;
-docker run --rm -e GIT_USER -e GIT_EMAIL -e GIT_TIMESTAMP --env-file=/var/jenkins_home/ghtoken.txt -v data:/data ropensci/docs universe $GIT_URL $PACKAGE $GIT_COMMIT
-echo &quot;Done!&quot;
+docker run --rm --env-file=/var/jenkins_home/ghtoken.txt -v data:/data ropensci/docs universe $GIT_URL $PACKAGE $GIT_COMMIT
+echo &quot;Universe is up to date!&quot;
 else
 echo &quot;Skipping deployment for non-master branch&quot;
 fi
