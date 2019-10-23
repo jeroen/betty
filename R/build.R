@@ -68,16 +68,8 @@ build_site <- function(repo, dest = ".", git_url = "", deploy_url = 'https://doc
 
   # Remove temp site in case of failure
   on.exit(unlink(tmp, recursive = TRUE), add = TRUE)
-
-  # Temp solution for https://github.com/r-lib/pkgdown/issues/1167
-  withCallingHandlers(
-    pkgdown::build_site(devel = FALSE, preview = FALSE, install = FALSE, override =
-      list(destination = tmp, title = title, url = url, template = template)),
-    error = function(e) {
-      print(e)
-      print(e$trace)
-      print(sys.calls())
-    })
+  pkgdown::build_site(devel = FALSE, preview = FALSE, install = FALSE, override =
+    list(destination = tmp, title = title, url = url, template = template))
   file.create(file.path(tmp, '.nojekyll'))
 
   # Save some info about the repo
