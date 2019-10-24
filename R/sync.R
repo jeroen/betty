@@ -125,6 +125,9 @@ get_docs_repos <- function(active_only = FALSE){
 update_sitemap <- function(path){
   sites <- get_docs_repos(active_only = TRUE)
 
+  skiplist <- 'ropensci-docs.github.io'
+  sites <- Filter(function(x){!(x %in% skiplist)}, sites)
+
   # Generate sitemap.xml
   body <- sprintf("  <url>\n    <loc>https://docs.ropensci.org/%s/</loc>\n  </url>", sites)
   sitemap <- paste(c('<?xml version="1.0" encoding="UTF-8"?>',
