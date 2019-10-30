@@ -71,13 +71,11 @@ sync_ropensci_jenkins <- function(update_jobs = FALSE, remove_jobs = TRUE, updat
 #' @rdname sync_ropensci
 #' @param update_sitemap generate updated sitemap.xml and index.html files
 sync_ropensci_docs <- function(update_sitemap = TRUE){
-  if(is.na(Sys.getenv('GITHUB_PAT', NA))){
-    credentials::set_github_pat()
-  }
   registry <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")
   packages <- c(registry$packages$name, 'ropensci-docs.github.io')
   repos <- get_docs_repos()
   added <- packages[!(packages %in% repos)]
+  message("Authenticated as", gh::gh_whoami()$name)
   if(length(added)){
     cat("Adding new packages: ", paste(added, collapse = ', '), "\n")
     if(utils::askYesNo("are you sure you want to add these packages?")){

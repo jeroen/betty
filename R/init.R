@@ -5,8 +5,13 @@
 
   # Fall back on anonymous PAT for rate limits
   if(is.na(Sys.getenv('GITHUB_PAT', NA))){
-    default_pat <- utils::getFromNamespace('github_pat', 'remotes')
-    Sys.setenv(CI = 1)
-    Sys.setenv(GITHUB_PAT = default_pat())
+    if(interactive()){
+      credentials::set_github_pat()
+    } else {
+      message("Setting anonymous Github PAT")
+      default_pat <- utils::getFromNamespace('github_pat', 'remotes')
+      Sys.setenv(CI = 1)
+      Sys.setenv(GITHUB_PAT = default_pat())
+    }
   }
 }
