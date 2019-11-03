@@ -8,15 +8,12 @@
 \alias{view_template}
 \title{Sync rOpenSci with Jenkins}
 \usage{
-sync_ropensci_jenkins(
-  update_jobs = FALSE,
-  remove_jobs = TRUE,
-  update_views = TRUE
-)
+sync_ropensci_jenkins(update_jobs = FALSE, remove_jobs = TRUE,
+  update_views = TRUE)
 
 sync_ropensci_docs(update_sitemap = TRUE)
 
-list_ropensci_docs_repos(active_only = FALSE)
+list_ropensci_docs_repos()
 
 config_template(git_url)
 
@@ -30,8 +27,6 @@ view_template(view_jobs)
 \item{update_views}{update the views (per-author package list)}
 
 \item{update_sitemap}{generate updated sitemap.xml and index.html files}
-
-\item{active_only}{only list repositories which have content in them}
 
 \item{git_url}{HTTPS git url of the target repository}
 

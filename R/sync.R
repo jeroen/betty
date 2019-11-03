@@ -102,21 +102,19 @@ sync_ropensci_docs <- function(update_sitemap = TRUE){
 
 #' @export
 #' @rdname sync_ropensci
-#' @param active_only only list repositories which have content in them
-list_ropensci_docs_repos <- function(active_only = FALSE){
+list_ropensci_docs_repos <- function(){
   repos <- gh::gh('/users/ropensci-docs/repos?per_page=100', .limit = 1e6)
-  if(active_only){
-    repos <- Filter(function(x){
-      created_at <- parse_time(x$created_at)
-      pushed_at <- parse_time(x$pushed_at)
-      abs(pushed_at - created_at) > 1
-    }, repos)
-  }
-  repos
+  lapply(repos, function(x){
+    x$active = abs(parse_time(x$pushed_at) - parse_time(x$created_at)) > 1
+    return(x)
+  })
 }
 
+#' @param active_only only list repositories which have content in them
 get_docs_repos <- function(active_only = FALSE){
-  out <- list_ropensci_docs_repos(active_only = active_only)
+  out <- list_ropensci_docs_repos()
+  if(isTRUE(active_only))
+    out <- Filter(function(x){isTRUE(x$active)}, out)
   unlist(lapply(out, `[[`, 'name'))
 }
 
