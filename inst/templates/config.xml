@@ -81,6 +81,9 @@ PACKAGE=$(grep &apos;Package:&apos; DESCRIPTION | awk &apos;{print $NF}&apos;)
 echo &quot;PACKAGE NAME: $PACKAGE&quot;
 echo &quot;GIT_BRANCH: $GIT_BRANCH&quot;
 if [ &quot;$GIT_BRANCH&quot; = &quot;origin/master&quot; ]; then
+echo &quot;Updating r-universe...&quot;
+docker run --rm --env-file=/var/jenkins_home/ghtoken.txt -v data:/data ropensci/docs universe $GIT_URL $PACKAGE $GIT_COMMIT
+echo &quot;Universe is up to date!&quot;
 if git log -n1 | grep &quot;flushcache&quot;; then
 echo &quot;Flushing the cache!&quot;
 docker volume rm ${BASENAME}_cache || true
@@ -103,9 +106,6 @@ if [ &quot;$GIT_BRANCH&quot; = &quot;origin/master&quot; ]; then
 echo &quot;Deploying to https://docs.ropensci.org...&quot;
 docker run --rm --env-file=/var/jenkins_home/ghtoken.txt -v data:/data ropensci/docs deploy $PACKAGE
 echo &quot;Docs deployment done!&quot;
-echo &quot;Updating r-universe...&quot;
-docker run --rm --env-file=/var/jenkins_home/ghtoken.txt -v data:/data ropensci/docs universe $GIT_URL $PACKAGE $GIT_COMMIT
-echo &quot;Universe is up to date!&quot;
 else
 echo &quot;Skipping deployment for non-master branch&quot;
 fi
