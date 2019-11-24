@@ -4,8 +4,7 @@
 \alias{update_universe}
 \title{Update Universe}
 \usage{
-update_universe(remote, dirname = basename(remote), ref = "master",
-  dest = ".")
+update_universe(remote, dirname = basename(remote), ref = "master", dest = ".")
 }
 \arguments{
 \item{remote}{URL of the upstream git repository to add}

@@ -3,15 +3,21 @@
 \name{sync_ropensci_jenkins}
 \alias{sync_ropensci_jenkins}
 \alias{sync_ropensci_docs}
+\alias{sync_ropensci_dev}
 \alias{list_ropensci_docs_repos}
 \alias{config_template}
 \alias{view_template}
 \title{Sync rOpenSci with Jenkins}
 \usage{
-sync_ropensci_jenkins(update_jobs = FALSE, remove_jobs = TRUE,
-  update_views = TRUE)
+sync_ropensci_jenkins(
+  update_jobs = FALSE,
+  remove_jobs = TRUE,
+  update_views = TRUE
+)
 
 sync_ropensci_docs(update_sitemap = TRUE)
+
+sync_ropensci_dev()
 
 list_ropensci_docs_repos()
 

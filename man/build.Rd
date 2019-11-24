@@ -5,8 +5,12 @@
 \alias{build_all_sites}
 \title{Betty Build}
 \usage{
-build_site(repo, dest = ".", git_url = "",
-  deploy_url = "https://docs.ropensci.org")
+build_site(
+  repo,
+  dest = ".",
+  git_url = "",
+  deploy_url = "https://docs.ropensci.org"
+)
 
 build_all_sites(dest = ".")
 }

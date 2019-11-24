@@ -102,6 +102,26 @@ sync_ropensci_docs <- function(update_sitemap = TRUE){
 
 #' @export
 #' @rdname sync_ropensci
+sync_ropensci_dev <- function(){
+  registry <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")
+  pkgs <- jsonlite::fromJSON('https://dev.ropensci.org/packages')
+  deleted <- pkgs[!(pkgs %in% registry$packages$name)]
+  if(length(deleted)){
+    cat("Removed packages: ", paste(deleted, collapse = ', '), "\n")
+    if(utils::askYesNo("are you sure you want to delete these from the repository?")){
+      lapply(deleted, function(package){
+        message("Deleting: ", package)
+        h <- curl::new_handle(customrequest = 'DELETE', userpwd = Sys.getenv("DEV_USERPWD"))
+        url <- sprintf("https://dev.ropensci.org/packages/%s", package)
+        out <- parse_res(curl::curl_fetch_memory(url, handle = h))
+        stopifnot(out$Package == package)
+      })
+    }
+  }
+}
+
+#' @export
+#' @rdname sync_ropensci
 list_ropensci_docs_repos <- function(){
   repos <- gh::gh('/users/ropensci-docs/repos?per_page=100', .limit = 1e6)
   lapply(repos, function(x){
@@ -189,4 +209,11 @@ create_new_docs_repo <- function(name){
 # Not sure how well jenkins deals with strange characters...
 asciify <- function(x){
   gsub("[^a-zA-Z0-9' .-]", "", stringi::stri_trans_general(x, "latin-ascii"))
+}
+
+parse_res <- function(res){
+  text <- rawToChar(res$content)
+  if(res$status >= 400)
+    stop(text)
+  jsonlite::fromJSON(text)
 }
