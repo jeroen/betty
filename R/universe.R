@@ -40,7 +40,7 @@ update_universe <- function(remote, dirname = basename(remote), ref = 'master', 
 
   # Update the submodule and commit
   gert::git_add(dirname)
-  if(nrow(gert::git_status()) == 0){
+  if(!any(gert::git_status()$staged)){
     cat(sprintf("Submodule %s already seems up-to-date\n", dirname), file = stderr())
   } else {
     package <- read.dcf(file.path(dirname, 'DESCRIPTION'))[[1,'Package']]
