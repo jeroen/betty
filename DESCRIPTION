@@ -25,5 +25,5 @@ Imports:
     yaml
 Remotes: 
     ropensci/rotemplate
-RoxygenNote: 7.0.0
+RoxygenNote: 7.0.1
 License: MIT + file LICENSE

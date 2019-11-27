@@ -122,6 +122,15 @@ sync_ropensci_dev <- function(){
 
 #' @export
 #' @rdname sync_ropensci
+sync_ropensci_universe <- function(){
+  packages <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")$packages
+  for(i in seq_len(nrow(packages))){
+    update_universe(packages$url[i], packages$name[i])
+  }
+}
+
+#' @export
+#' @rdname sync_ropensci
 list_ropensci_docs_repos <- function(){
   repos <- gh::gh('/users/ropensci-docs/repos?per_page=100', .limit = 1e6)
   lapply(repos, function(x){
