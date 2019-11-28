@@ -118,14 +118,15 @@ sync_ropensci_dev <- function(){
       })
     }
   }
+  sync_ropensci_universe()
 }
 
-#' @export
-#' @rdname sync_ropensci
 sync_ropensci_universe <- function(){
+  universe <- jsonlite::fromJSON('https://api.github.com/repos/r-universe/ropensci/contents/')
   packages <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")$packages
-  for(i in seq_len(nrow(packages))){
-    update_universe(packages$url[i], packages$name[i])
+  missing <- packages[!(packages$name %in% universe$name),]
+  for(i in seq_len(nrow(missing))){
+    update_universe(missing$url[i], missing$name[i])
   }
 }
 

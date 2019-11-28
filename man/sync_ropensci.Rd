@@ -4,7 +4,6 @@
 \alias{sync_ropensci_jenkins}
 \alias{sync_ropensci_docs}
 \alias{sync_ropensci_dev}
-\alias{sync_ropensci_universe}
 \alias{list_ropensci_docs_repos}
 \alias{config_template}
 \alias{view_template}
@@ -19,8 +18,6 @@ sync_ropensci_jenkins(
 sync_ropensci_docs(update_sitemap = TRUE)
 
 sync_ropensci_dev()
-
-sync_ropensci_universe()
 
 list_ropensci_docs_repos()
 
