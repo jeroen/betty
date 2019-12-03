@@ -48,6 +48,7 @@ build_site <- function(repo, dest = ".", git_url = "", deploy_url = 'https://doc
 
   # Extra packages
   #try(install_travis_packages())
+  try(install_pkgdown_packages())
   Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS=TRUE)
   remotes::install_deps(dependencies = TRUE, upgrade = TRUE)
   pkgfile <- pkgbuild::build(dest_path = tempdir(), vignettes = FALSE)
@@ -116,6 +117,16 @@ install_travis_packages <- function(){
     }
     if(length(travis_config$r_github_packages)){
       remotes::install_github(travis_config$r_github_packages, upgrade = FALSE)
+    }
+  }
+}
+
+install_pkgdown_packages <- function(){
+  if(file.exists('_pkgdown.yml')){
+    pkgdown_config <- yaml::read_yaml('_pkgdown.yml')
+    extra_pkgs <- c(pkgdown_config$extra_packages)
+    if(length(extra_pkgs)){
+      remotes::install_cran(extra_pkgs, upgrade = FALSE)
     }
   }
 }

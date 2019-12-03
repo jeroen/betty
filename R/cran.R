@@ -22,20 +22,22 @@ cran_registry <- function(){
 sync_cran_dev <- function(){
   packages <- cran_registry()
   packages <- packages[!is.na(packages$Git),]
-  for(i in seq_len(nrow(packages))){
-    pkg <- as.list(packages[i,])
-    cat("Testing", pkg$Package, "from", pkg$Git, "...")
+  statusvec <- rep(NA_integer_, nrow(packages))
+  pool <- curl::new_pool()
+  lapply(seq_len(nrow(packages)), function(i){
+    k <- i
+    pkg <- as.list(packages[k,])
     desc_url <- paste0(pkg$Git, '/raw/master/DESCRIPTION')
-    tryCatch ({
-      desc <- read_description(desc_url)
-      if(desc$Package != pkg$Package){
-        stop(paste("Package name does not match description:", desc$Package))
-      }
-      message("OK!")
-    }, error = function(e){
+    curl::curl_fetch_multi(desc_url, done = function(res){
+      statusvec[k] <<- res$status
+      message("Done ", pkg$Package, " from ", pkg$Git,  ": ", res$status)
+    }, fail = function(e){
       message("Failure for ", pkg$Package, ": ", e$message)
-    })
-  }
+    }, pool = pool)
+  })
+  curl::multi_run(pool = pool)
+  packages$status <- statusvec
+  return(packages)
 }
 
 read_description <- function(desc_url){
