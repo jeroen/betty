@@ -4,6 +4,7 @@
 \alias{sync_ropensci_jenkins}
 \alias{sync_ropensci_docs}
 \alias{sync_ropensci_dev}
+\alias{list_missing_docs}
 \alias{list_ropensci_docs_repos}
 \alias{config_template}
 \alias{view_template}
@@ -18,6 +19,8 @@ sync_ropensci_jenkins(
 sync_ropensci_docs(update_sitemap = TRUE)
 
 sync_ropensci_dev()
+
+list_missing_docs()
 
 list_ropensci_docs_repos()
 

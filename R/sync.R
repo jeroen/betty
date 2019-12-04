@@ -121,6 +121,15 @@ sync_ropensci_dev <- function(){
   sync_ropensci_universe()
 }
 
+#' @export
+#' @rdname sync_ropensci
+list_missing_docs <- function(){
+  packages <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")$packages
+  df <- jsonlite:::simplify(list_ropensci_docs_repos())
+  names <- subset(df, active == FALSE)$name
+  subset(packages, name %in% names, select = c("name", "url"))
+}
+
 sync_ropensci_universe <- function(){
   universe <- jsonlite::fromJSON('https://api.github.com/repos/r-universe/ropensci/contents/')
   packages <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")$packages
