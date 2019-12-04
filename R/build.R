@@ -125,8 +125,14 @@ install_pkgdown_packages <- function(){
   if(file.exists('_pkgdown.yml')){
     pkgdown_config <- yaml::read_yaml('_pkgdown.yml')
     extra_pkgs <- c(pkgdown_config$extra_packages)
-    if(length(extra_pkgs)){
-      remotes::install_cran(extra_pkgs, upgrade = FALSE)
+    is_github <- grepl('/', extra_pkgs)
+    cran_pkgs <- extra_pkgs[!is_github]
+    gh_pkgs <- extra_pkgs[is_github]
+    if(length(cran_pkgs)){
+      remotes::install_cran(cran_pkgs, upgrade = FALSE)
+    }
+    if(length(gh_pkgs)){
+      remotes::install_github(gh_pkgs, upgrade = FALSE)
     }
   }
 }
