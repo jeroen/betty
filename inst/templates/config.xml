@@ -5,7 +5,7 @@
 </description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <hudson.plugins.jira.JiraProjectProperty plugin="jira@3.0.10"/>
+    <hudson.plugins.jira.JiraProjectProperty plugin="jira@3.0.11"/>
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
         <daysToKeep>-1</daysToKeep>
@@ -14,7 +14,7 @@
         <artifactNumToKeep>-1</artifactNumToKeep>
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
-    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.29.4">
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.29.5">
       <projectUrl>INSERT_GIT_REPO_URL</projectUrl>
       <displayName></displayName>
     </com.coravy.hudson.plugins.github.GithubProjectProperty>
@@ -29,7 +29,7 @@
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
-  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.12.1">
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@4.0.0">
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
@@ -54,13 +54,13 @@
       <spec>H H * * H
 </spec>
     </hudson.triggers.TimerTrigger>
-    <com.cloudbees.jenkins.GitHubPushTrigger plugin="github@1.29.4">
+    <com.cloudbees.jenkins.GitHubPushTrigger plugin="github@1.29.5">
       <spec></spec>
     </com.cloudbees.jenkins.GitHubPushTrigger>
   </triggers>
   <concurrentBuild>false</concurrentBuild>
   <builders>
-    <com.cloudbees.jenkins.GitHubSetCommitStatusBuilder plugin="github@1.29.4">
+    <com.cloudbees.jenkins.GitHubSetCommitStatusBuilder plugin="github@1.29.5">
       <statusMessage>
         <content></content>
       </statusMessage>
@@ -114,7 +114,7 @@ echo &quot;All done!&quot;
     </hudson.tasks.Shell>
   </builders>
   <publishers>
-    <org.jenkinsci.plugins.github.status.GitHubCommitStatusSetter plugin="github@1.29.4">
+    <org.jenkinsci.plugins.github.status.GitHubCommitStatusSetter plugin="github@1.29.5">
       <commitShaSource class="org.jenkinsci.plugins.github.status.sources.BuildDataRevisionShaSource"/>
       <reposSource class="org.jenkinsci.plugins.github.status.sources.AnyDefinedRepositorySource"/>
       <contextSource class="org.jenkinsci.plugins.github.status.sources.ManuallyEnteredCommitContextSource">
@@ -122,7 +122,9 @@ echo &quot;All done!&quot;
       </contextSource>
       <statusResultSource class="org.jenkinsci.plugins.github.status.sources.DefaultStatusResultSource"/>
       <statusBackrefSource class="org.jenkinsci.plugins.github.status.sources.BuildRefBackrefSource"/>
-      <errorHandlers/>
+      <errorHandlers>
+        <org.jenkinsci.plugins.github.status.err.ShallowAnyErrorHandler/>
+      </errorHandlers>
     </org.jenkinsci.plugins.github.status.GitHubCommitStatusSetter>
   </publishers>
   <buildWrappers/>
