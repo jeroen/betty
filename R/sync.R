@@ -229,6 +229,18 @@ set_repo_homepage <- function(repo, homepage){
   gh::gh(paste0('/repos/', repo), .method = 'PATCH', homepage = homepage)
 }
 
+disable_legacy_pkgdown <- function(repo){
+  testurl <- sprintf('https://ropensci.github.io/%s/pkgdown.yml', basename(repo))
+  req <- curl::curl_fetch_memory(testurl)
+  if(req$status_code == 200){
+    message("Disabling legacy site for:", dirname(testurl))
+    endpoint <- sprintf("/repos/%s/pages", repo)
+    gh::gh(endpoint, .method = 'DELETE', .send_headers = c(Accept = 'application/vnd.github.switcheroo-preview+json'))
+  } else {
+    message("No legacy pkgdown for:", dirname(testurl))
+  }
+}
+
 #' @export
 sync_ropensci_homepages <- function(){
   packages <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")$packages
@@ -238,7 +250,7 @@ sync_ropensci_homepages <- function(){
   message("EXCLUDED: ", sites[excluded])
   sites <- sites[!excluded]
   for(pkg in sites){
-    url <-  subset(packages, name == pkg)$url
+    url <-  subset(packages, name == pkg)$url[1]
     if(!length(url) || !grepl('^https://github.com/(ropensci|ropenscilabs)', url)){
       message("No Github URL found for: ", pkg)
       next
@@ -247,6 +259,7 @@ sync_ropensci_homepages <- function(){
     homepage <- paste0('https://docs.ropensci.org/', pkg)
     set_repo_homepage(repo, homepage)
     message(sprintf("Homepage for package '%s' updated to: %s", pkg, homepage))
+    disable_legacy_pkgdown(repo)
   }
 }
 
