@@ -225,6 +225,31 @@ create_new_docs_repo <- function(name){
          has_issues = FALSE, has_wiki = FALSE)
 }
 
+set_repo_homepage <- function(repo, homepage){
+  gh::gh(paste0('/repos/', repo), .method = 'PATCH', homepage = homepage)
+}
+
+#' @export
+sync_ropensci_homepages <- function(){
+  packages <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")$packages
+  sites <- get_docs_repos(active_only = TRUE)
+  skiplist <- readLines('https://raw.githubusercontent.com/ropenscilabs/makeregistry/master/inst/automation/exclude_list.txt')
+  excluded <- sites %in% skiplist
+  message("EXCLUDED: ", sites[excluded])
+  sites <- sites[!excluded]
+  for(pkg in sites){
+    url <-  subset(packages, name == pkg)$url
+    if(!length(url) || !grepl('^https://github.com/(ropensci|ropenscilabs)', url)){
+      message("No Github URL found for: ", pkg)
+      next
+    }
+    repo <- sub('https://github.com/', '', url)
+    homepage <- paste0('https://docs.ropensci.org/', pkg)
+    set_repo_homepage(repo, homepage)
+    message(sprintf("Homepage for package '%s' updated to: %s", pkg, homepage))
+  }
+}
+
 # Not sure how well jenkins deals with strange characters...
 asciify <- function(x){
   gsub("[^a-zA-Z0-9' .-]", "", stringi::stri_trans_general(x, "latin-ascii"))
