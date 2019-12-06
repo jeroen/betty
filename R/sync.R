@@ -248,7 +248,8 @@ sync_ropensci_homepages <- function(){
   skiplist <- readLines('https://raw.githubusercontent.com/ropenscilabs/makeregistry/master/inst/automation/exclude_list.txt')
   excluded <- sites %in% skiplist
   message("EXCLUDED: ", sites[excluded])
-  sites <- sites[!excluded]
+  # visdat uses custom pkgdown domain
+  sites <- c(sites[!excluded], 'visdat')
   for(pkg in sites){
     url <-  subset(packages, name == pkg)$url[1]
     if(!length(url) || !grepl('^https://github.com/(ropensci|ropenscilabs)', url)){
