@@ -233,6 +233,10 @@ disable_legacy_pkgdown <- function(repo){
   testurl <- sprintf('https://ropensci.github.io/%s/pkgdown.yml', basename(repo))
   req <- curl::curl_fetch_memory(testurl)
   if(req$status_code == 200){
+    if(!grepl("https://ropensci.github.io", req$url)){
+      message(sprintf("Pkgdown site for %s has custom domain: %s", basename(repo), dirname(req$url)))
+      return()
+    }
     message("Disabling legacy site for:", dirname(testurl))
     endpoint <- sprintf("/repos/%s/pages", repo)
     gh::gh(endpoint, .method = 'DELETE', .send_headers = c(Accept = 'application/vnd.github.switcheroo-preview+json'))
@@ -249,7 +253,7 @@ sync_ropensci_homepages <- function(){
   excluded <- sites %in% skiplist
   message("EXCLUDED: ", sites[excluded])
   # visdat uses custom pkgdown domain
-  sites <- c(sites[!excluded], 'visdat')
+  sites <- sites[!excluded]
   for(pkg in sites){
     url <-  subset(packages, name == pkg)$url[1]
     if(!length(url) || !grepl('^https://github.com/(ropensci|ropenscilabs)', url)){
