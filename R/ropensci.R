@@ -15,26 +15,21 @@ modify_ropensci_readme <- function(file, pkg, git_url = ""){
   readme <- readLines(file)
   h1 <- find_h1_line(readme)
   is_labs <- isTRUE(grepl('ropenscilabs', git_url))
-  if(!is_labs && isTRUE(grepl("(<img|!\\[)", h1$input))){
-    cat("Found an image in H1, not replacing title line\n");
-    return()
-  }
-
-  cat("Replacing H1 line\n")
-  title <- pkg
-  #title <- ifelse(length(h1$title) && !is.na(h1$title), h1$title, sprintf('the __%s__ package', pkg))
-
-  banner <- if(is_labs){
-    ropensci_labs_banner(title)
-  } else {
-    ropensci_main_banner(title)
-  }
-  if(is.na(h1$pos)){
-    readme <- c(banner, readme)
-  } else {
-    readme[h1$pos] <- banner
-    if(isTRUE(grepl("^[= ]+$", readme[h1$pos + 1])))
-      readme[h1$pos + 1] = ""
+  has_logo <- isTRUE(grepl("(<img|!\\[)", h1$input))
+  if(is_labs || has_logo){
+    cat("Replacing H1 line\n")
+    banner <- if(is_labs){
+      ropensci_labs_banner(pkg)
+    } else {
+      ropensci_main_banner(pkg)
+    }
+    if(is.na(h1$pos)){
+      readme <- c(banner, readme)
+    } else {
+      readme[h1$pos] <- banner
+      if(isTRUE(grepl("^[= ]+$", readme[h1$pos + 1])))
+        readme[h1$pos + 1] = ""
+    }
   }
   ugly_footer <- find_old_footer_banner(readme)
   readme[ugly_footer] = ""
