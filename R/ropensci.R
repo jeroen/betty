@@ -61,5 +61,5 @@ find_h1_line <- function(txt){
 }
 
 find_old_footer_banner <- function(txt){
-  which(grepl('\\[.*\\]\\(.*/ropensci_footer.png\\)', txt))
+  which(grepl('\\[.*\\]\\(.*/(ropensci|github)_footer.png\\)', txt))
 }
