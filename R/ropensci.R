@@ -36,6 +36,8 @@ modify_ropensci_readme <- function(file, pkg, git_url = ""){
     if(isTRUE(grepl("^[= ]+$", readme[h1$pos + 1])))
       readme[h1$pos + 1] = ""
   }
+  ugly_footer <- find_old_footer_banner(readme)
+  readme[ugly_footer] = ""
   writeLines(readme, file)
 }
 
@@ -56,4 +58,8 @@ find_h1_line <- function(txt){
   title <- xml2::xml_text(xml2::xml_find_all(node, 'text'))
   input <- xml2::xml_text(node)
   list(pos = pos, title = title, input = input)
+}
+
+find_old_footer_banner <- function(txt){
+  which(grepl('\\[.*\\]\\(.*/ropensci_footer.png\\)', txt))
 }
