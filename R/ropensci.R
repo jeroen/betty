@@ -16,7 +16,7 @@ modify_ropensci_readme <- function(file, pkg, git_url = ""){
   h1 <- find_h1_line(readme)
   is_labs <- isTRUE(grepl('ropenscilabs', git_url))
   has_logo <- isTRUE(grepl("(<img|!\\[)", h1$input))
-  if(is_labs || has_logo){
+  if(is_labs || !has_logo){
     cat("Replacing H1 line\n")
     banner <- if(is_labs){
       ropensci_labs_banner(pkg)
