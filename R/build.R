@@ -63,16 +63,16 @@ build_site <- function(repo, dest = ".", git_url = "", deploy_url = 'https://doc
   url <- paste0(deploy_url, "/", pkg)
   dest <- paste0(doc_dir, pkg)
   tmp <- paste0(dest, "_TMP")
-  template <- if(!isTRUE(grepl('ropenscilabs', git_url))){
-    list(package = "rotemplate",
-      params = list(
-        docsearch = list(
-          api_key = '799829e946e1f0f9cd5b5a782c6316b9',
-          index_name = paste0('ropensci-', tolower(pkg))
-        )
+  template <- list(
+    params = list(
+      docsearch = list(
+        api_key = '799829e946e1f0f9cd5b5a782c6316b9',
+        index_name = paste0('ropensci-', tolower(pkg))
       )
     )
-  }
+  )
+  if(!isTRUE(grepl('ropenscilabs', git_url)))
+    template$package = "rotemplate"
 
   unlink(tmp, recursive = TRUE)
 
