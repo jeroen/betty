@@ -250,6 +250,7 @@ sync_ropensci_homepages <- function(){
   packages <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")$packages
   sites <- get_docs_repos(active_only = TRUE)
   skiplist <- readLines('https://raw.githubusercontent.com/ropenscilabs/makeregistry/master/inst/automation/exclude_list.txt')
+  skiplist <- c(skiplist, 'git2rdata')
   excluded <- sites %in% skiplist
   message("EXCLUDED: ", sites[excluded])
   # visdat uses custom pkgdown domain
