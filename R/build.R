@@ -71,8 +71,12 @@ build_site <- function(repo, dest = ".", git_url = "", deploy_url = 'https://doc
       )
     )
   )
-  if(!isTRUE(grepl('ropenscilabs', git_url)))
+  if(!isTRUE(grepl('ropenscilabs', git_url))){
     template$package = "rotemplate"
+
+    # Hack: pkgdown doesn't seem to override packages that set: template:path
+    template$path = system.file("pkgdown/templates", package='rotemplate')
+  }
 
   unlink(tmp, recursive = TRUE)
 
