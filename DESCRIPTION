@@ -13,7 +13,7 @@ Imports:
     commonmark,
     gh,
     gert,
-    jenkins,
+    jenkins (>= 1.0.9000),
     jsonlite,
     remotes,
     pkgbuild,
@@ -23,7 +23,8 @@ Imports:
     sys,
     xml2,
     yaml
-Remotes: 
+Remotes:
+    ropensci/jenkins,
     ropensci/rotemplate
 RoxygenNote: 7.0.2
 License: MIT + file LICENSE
