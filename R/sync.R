@@ -16,27 +16,32 @@ sync_ropensci_jenkins <- function(update_jobs = FALSE, remove_jobs = TRUE, updat
   packages <- jsonlite::fromJSON(url)$packages
   for(i in seq_len(nrow(packages))){
     name <- packages[i, "name"]
-    xml <- config_template(packages[i, "url"])
+    git_url <- packages[i, "url"]
+    xml <- config_template(git_url)
     if(name %in% jobs$name){
+      job <- as.list(jobs[jobs$name == name,])
       if(isTRUE(update_jobs)){
-        cat(sprintf("Updating job config for %s...", name))
+        caterr(sprintf("Updating job config for %s...", name))
+        jk$project_update(name, xml_string = xml)
+      } else if(job$git != git_url){
+        caterr(sprintf("Updating git URL for job %s (%s -> %s)...", name, git_url, job$git))
         jk$project_update(name, xml_string = xml)
       } else {
-        cat(sprintf("Job config for %s already exists...", name))
+        caterr(sprintf("Job config for %s already exists...", name))
       }
     } else {
-      cat(sprintf("Creating new job for %s...", name))
+      caterr(sprintf("Creating new job for %s...", name))
       jk$project_create(name, xml_string = xml)
       jk$project_build(name)
     }
-    cat("OK!\n")
+    caterr("OK!\n")
   }
   if(isTRUE(remove_jobs)){
     gone <- !(jobs$name %in% packages$name)
     lapply(jobs$name[gone], function(name){
-      cat(sprintf("Deleting job %s which is no longer in the roregistry...", name))
+      caterr(sprintf("Deleting job %s which is no longer in the roregistry...", name))
       jk$project_delete(name)
-      cat("OK!\n")
+      caterr("OK!\n")
     })
   }
   if(isTRUE(update_views)){
@@ -49,19 +54,19 @@ sync_ropensci_jenkins <- function(update_jobs = FALSE, remove_jobs = TRUE, updat
         stop(sprintf("Failed to find packages for author %s", author))
       xml <- view_template(pkg_names)
       if(author %in% views$name){
-        cat(sprintf("Updating view for %s...", author))
+        caterr(sprintf("Updating view for %s...", author))
         jk$view_update(author, xml_string = xml)
       } else {
-        cat(sprintf("Creating new view for %s...", author))
+        caterr(sprintf("Creating new view for %s...", author))
         jk$view_create(author, xml_string = xml)
       }
-      cat("OK!\n")
+      caterr("OK!\n")
     })
     views_gone <- !(views$name %in% c(authors, 'all'))
     lapply(views$name[views_gone], function(author){
-      cat(sprintf("Deleting view %s which is no longer a maintainer...", author))
+      caterr(sprintf("Deleting view %s which is no longer a maintainer...", author))
       jk$view_delete(author)
-      cat("OK!\n")
+      caterr("OK!\n")
     })
   }
   invisible(jk$server_info())
@@ -77,14 +82,14 @@ sync_ropensci_docs <- function(update_sitemap = TRUE){
   added <- packages[!(packages %in% repos)]
   message("Authenticated as", gh::gh_whoami()$name)
   if(length(added)){
-    cat("Adding new packages: ", paste(added, collapse = ', '), "\n")
+    caterr("Adding new packages: ", paste(added, collapse = ', '), "\n")
     if(utils::askYesNo("are you sure you want to add these packages?")){
       lapply(added, create_new_docs_repo)
     }
   }
   deleted <- repos[!(repos %in% packages)]
   if(length(deleted)){
-    cat("Removed packages: ", paste(deleted, collapse = ', '), "\n")
+    caterr("Removed packages: ", paste(deleted, collapse = ', '), "\n")
     if(utils::askYesNo("are you sure you want to delete these?")){
       lapply(deleted, function(name){
         message("Deleting: ropensci-docs/", name)
@@ -107,7 +112,7 @@ sync_ropensci_dev <- function(){
   pkgs <- jsonlite::fromJSON('https://dev.ropensci.org/packages')
   deleted <- pkgs[!(pkgs %in% registry$packages$name)]
   if(length(deleted)){
-    cat("Removed packages: ", paste(deleted, collapse = ', '), "\n")
+    caterr("Removed packages: ", paste(deleted, collapse = ', '), "\n")
     if(utils::askYesNo("are you sure you want to delete these from the repository?")){
       lapply(deleted, function(package){
         message("Deleting: ", package)
@@ -279,4 +284,8 @@ parse_res <- function(res){
   if(res$status >= 400)
     stop(text)
   jsonlite::fromJSON(text)
+}
+
+caterr <- function(...){
+  base::cat(..., file = stderr())
 }
