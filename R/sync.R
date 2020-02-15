@@ -10,6 +10,7 @@
 #' @param remove_jobs delete jobs that are no longer in the registry
 #' @param update_views update the views (per-author package list)
 sync_ropensci_jenkins <- function(update_jobs = FALSE, remove_jobs = TRUE, update_views = TRUE){
+  anychange <- FALSE
   jk <- jenkins::jenkins('http://jenkins.ropensci.org')
   jobs <- jk$project_list()
   url <- "https://ropensci.github.io/roregistry/registry.json"
@@ -23,6 +24,7 @@ sync_ropensci_jenkins <- function(update_jobs = FALSE, remove_jobs = TRUE, updat
       if(isTRUE(update_jobs)){
         caterr(sprintf("Updating job config for %s...", name))
         jk$project_update(name, xml_string = xml)
+        anychange <- TRUE
       } else if(job$git != git_url){
         caterr(sprintf("Updating git URL for job %s (%s -> %s)...", name, git_url, job$git))
         jk$project_update(name, xml_string = xml)
@@ -33,6 +35,7 @@ sync_ropensci_jenkins <- function(update_jobs = FALSE, remove_jobs = TRUE, updat
       caterr(sprintf("Creating new job for %s...", name))
       jk$project_create(name, xml_string = xml)
       jk$project_build(name)
+      anychange <- TRUE
     }
     caterr("OK!\n")
   }
@@ -43,8 +46,11 @@ sync_ropensci_jenkins <- function(update_jobs = FALSE, remove_jobs = TRUE, updat
       jk$project_delete(name)
       caterr("OK!\n")
     })
+    if(length(jobs$name[gone])){
+      anychange <- TRUE
+    }
   }
-  if(isTRUE(update_views)){
+  if(isTRUE(update_views) && isTRUE(anychange)){
     views <- jk$view_list()
     packages$maintainer <- asciify(packages$maintainer)
     authors <- unique(packages$maintainer)
