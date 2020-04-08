@@ -144,6 +144,7 @@ list_missing_docs <- function(){
 sync_ropensci_universe <- function(){
   universe <- jsonlite::fromJSON('https://api.github.com/repos/r-universe/ropensci/contents/')
   packages <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")$packages
+  packages <- packages[order(as.Date(packages$date_last_commit)),]
   missing <- packages[!(packages$name %in% universe$name),]
   for(i in seq_len(nrow(missing))){
     update_universe(missing$url[i], missing$name[i])
