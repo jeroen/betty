@@ -11,6 +11,9 @@ LazyData: true
 Imports: 
     credentials,
     commonmark,
+    curl,
+    tibble,
+    dplyr,
     gh,
     gert,
     jenkins (>= 1.0.9100),

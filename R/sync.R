@@ -13,8 +13,7 @@ sync_ropensci_jenkins <- function(update_jobs = FALSE, remove_jobs = TRUE, updat
   anychange <- FALSE
   jk <- jenkins::jenkins('http://jenkins.ropensci.org')
   jobs <- jk$project_list()
-  url <- "https://ropensci.github.io/roregistry/registry.json"
-  packages <- jsonlite::fromJSON(url)$packages
+  packages <- get_registry_index()
   for(i in seq_len(nrow(packages))){
     name <- packages[i, "name"]
     git_url <- packages[i, "url"]
@@ -82,8 +81,8 @@ sync_ropensci_jenkins <- function(update_jobs = FALSE, remove_jobs = TRUE, updat
 #' @rdname sync_ropensci
 #' @param update_sitemap generate updated sitemap.xml and index.html files
 sync_ropensci_docs <- function(update_sitemap = TRUE){
-  registry <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")
-  packages <- c(registry$packages$name, 'ropensci-docs.github.io')
+  index <- get_registry_index()
+  packages <- c(index$name, 'ropensci-docs.github.io')
   repos <- get_docs_repos()
   added <- packages[!(packages %in% repos)]
   message("Authenticated as", gh::gh_whoami()$name)
@@ -114,9 +113,9 @@ sync_ropensci_docs <- function(update_sitemap = TRUE){
 #' @export
 #' @rdname sync_ropensci
 sync_ropensci_dev <- function(){
-  registry <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")
+  registry <- get_registry_index()
   pkgs <- jsonlite::fromJSON('https://dev.ropensci.org/packages')
-  deleted <- pkgs[!(pkgs %in% registry$packages$name)]
+  deleted <- pkgs[!(pkgs %in% registry$name)]
   if(length(deleted)){
     caterr("Removed packages: ", paste(deleted, collapse = ', '), "\n")
     if(utils::askYesNo("are you sure you want to delete these from the repository?")){
@@ -135,7 +134,7 @@ sync_ropensci_dev <- function(){
 #' @export
 #' @rdname sync_ropensci
 list_missing_docs <- function(){
-  packages <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")$packages
+  packages <- get_registry_index()
   df <- jsonlite:::simplify(list_ropensci_docs_repos())
   names <- subset(df, active == FALSE)$name
   subset(packages, name %in% names, select = c("name", "url"))
@@ -143,7 +142,7 @@ list_missing_docs <- function(){
 
 sync_ropensci_universe <- function(){
   universe <- jsonlite::fromJSON('https://api.github.com/repos/r-universe/ropensci/contents/')
-  packages <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")$packages
+  packages <- get_registry_index()
   packages <- packages[order(as.Date(packages$date_last_commit)),]
   missing <- packages[!(packages$name %in% universe$name),]
   for(i in seq_len(nrow(missing))){
@@ -259,7 +258,7 @@ disable_legacy_pkgdown <- function(repo){
 
 #' @export
 sync_ropensci_homepages <- function(){
-  packages <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")$packages
+  packages <- get_registry_index()
   sites <- get_docs_repos(active_only = TRUE)
   skiplist <- readLines('https://raw.githubusercontent.com/ropenscilabs/makeregistry/master/inst/automation/exclude_list.txt')
   skiplist <- c(skiplist, 'git2rdata')
@@ -279,6 +278,14 @@ sync_ropensci_homepages <- function(){
     message(sprintf("Homepage for package '%s' updated to: %s", pkg, homepage))
     disable_legacy_pkgdown(repo)
   }
+}
+
+get_registry_index <- function(){
+  packages <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")$packages
+  extra <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry_extra.json")
+  names(extra) <- c("name", "url")
+  extra$maintainer <- basename(dirname(extra$url))
+  dplyr::bind_rows(packages, extra)
 }
 
 # Not sure how well jenkins deals with strange characters...
