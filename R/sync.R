@@ -285,7 +285,9 @@ get_registry_index <- function(){
   names(packages) <- c("name", "url")
   metadata <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")$packages
   metadata$url = NULL
-  merge(packages, y = metadata, by = 'name', all.x = TRUE)
+  df <- merge(packages, y = metadata, by = 'name', all.x = TRUE)
+  df$maintainer[is.na(df$maintainer)] = 'unknown'
+  df
 }
 
 # Not sure how well jenkins deals with strange characters...
