@@ -29,5 +29,5 @@ Imports:
 Remotes:
     ropensci/jenkins,
     ropensci/rotemplate
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0.9000
 License: MIT + file LICENSE

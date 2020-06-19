@@ -281,11 +281,11 @@ sync_ropensci_homepages <- function(){
 }
 
 get_registry_index <- function(){
-  packages <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")$packages
-  extra <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry_extra.json")
-  names(extra) <- c("name", "url")
-  extra$maintainer <- basename(dirname(extra$url))
-  dplyr::bind_rows(packages, extra)
+  packages <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry_urls.json")
+  names(packages) <- c("name", "url")
+  metadata <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")$packages
+  metadata$url = NULL
+  merge(packages, y = metadata, by = 'name', all.x = TRUE)
 }
 
 # Not sure how well jenkins deals with strange characters...
