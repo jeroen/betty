@@ -21,9 +21,9 @@ update_universe <- function(remote, dirname = basename(remote), ref = 'master', 
   on.exit(setwd(pwd))
   setwd(universe)
 
-  # Force sync with upstream: TODO: port to gert
-  sys::exec_wait("git", c("fetch", '--all'))
-  sys::exec_wait("git", c('reset', '--hard', 'origin/master'))
+  # Sync with upstream universe
+  gert::git_fetch('origin')
+  gert::git_reset_hard('origin/master')
 
   # Initiate or update the package submodule
   if(sys::exec_wait("git", c("submodule", "status", dirname), std_err = FALSE) == 0){
@@ -31,9 +31,9 @@ update_universe <- function(remote, dirname = basename(remote), ref = 'master', 
   } else {
     sys::exec_wait("git", c("submodule", "add", remote, dirname))
   }
-  setwd(dirname)
-  sys::exec_internal("git", c("checkout", ref))
-  setwd("..")
+  #setwd(dirname)
+  #sys::exec_internal("git", c("checkout", ref))
+  #setwd("..")
 
   # In case a concurrent package just pushed a commit
   gert::git_pull()
