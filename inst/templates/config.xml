@@ -43,7 +43,7 @@
     </userRemoteConfigs>
     <branches>
       <hudson.plugins.git.BranchSpec>
-        <name>:origin/(main|master)</name>
+        <name>**</name>
       </hudson.plugins.git.BranchSpec>
     </branches>
     <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
@@ -104,6 +104,9 @@ docker volume rm ${BASENAME}_cache || true
 fi
 ENABLE_CACHE=&quot;--env R_LIBS_USER=/cache -v ${BASENAME}_cache:/cache&quot;
 ENABLE_STORE=&quot;-v data:/data&quot;
+else
+echo &quot;Using read-only cache from $DEPLOY_BRANCH&quot;
+ENABLE_CACHE=&quot;--env R_LIBS_USER=~:/cache -v ${BASENAME}_cache:/cache:ro&quot;
 fi
 if [ -f &quot;.Renviron&quot; ]; then
 ENVVAR_FILE=&quot;--env-file=.Renviron&quot;
