@@ -83,9 +83,12 @@ echo &quot;&quot;
 cat DESCRIPTION
 BASENAME=$(basename $PWD)
 PACKAGE=$(grep &apos;Package:&apos; DESCRIPTION | awk &apos;{print $NF}&apos;)
+MASTER=$(git remote show origin | grep &quot;HEAD branch&quot; | sed &apos;s/.*: //&apos;)
+DEPLOY_BRANCH=&quot;origin/${MASTER}&quot;
 echo &quot;PACKAGE NAME: $PACKAGE&quot;
 echo &quot;GIT_BRANCH: $GIT_BRANCH&quot;
-if [ &quot;$GIT_BRANCH&quot; = &quot;origin/master&quot; ]; then
+echo &quot;DEPLOY_BRANCH: $DEPLOY_BRANCH&quot;
+if [ &quot;$GIT_BRANCH&quot; = &quot;$DEPLOY_BRANCH&quot; ]; then
 if [ &quot;$UPDATE_UNIVERSE&quot; = &quot;true&quot; ]; then
 echo &quot;Updating r-universe...&quot;
 docker run --rm --env-file=/var/jenkins_home/ghtoken.txt -v data:/data ropensci/docs universe $GIT_URL $PACKAGE $GIT_COMMIT
@@ -109,7 +112,7 @@ docker pull ropensci/docs
 ID=$(docker create --rm $ENVVAR_FILE $ENABLE_CACHE $ENABLE_STORE ropensci/docs build &quot;/$BASENAME&quot; &quot;$GIT_URL&quot;)
 docker cp $PWD &quot;$ID:/$BASENAME&quot;
 docker start $ID --attach
-if [ &quot;$GIT_BRANCH&quot; = &quot;origin/master&quot; ]; then
+if [ &quot;$GIT_BRANCH&quot; = &quot;$DEPLOY_BRANCH&quot; ]; then
 echo &quot;Deploying to https://docs.ropensci.org...&quot;
 docker run --rm --env-file=/var/jenkins_home/ghtoken.txt -v data:/data ropensci/docs deploy $PACKAGE
 echo &quot;Docs deployment done!&quot;
