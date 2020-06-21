@@ -31,12 +31,10 @@ update_universe <- function(remote, dirname = basename(remote), ref = 'master', 
   } else {
     sys::exec_wait("git", c("submodule", "add", remote, dirname))
   }
-  #setwd(dirname)
-  #sys::exec_internal("git", c("checkout", ref))
-  #setwd("..")
 
   # In case a concurrent package just pushed a commit
-  gert::git_pull()
+  gert::git_rebase_commit()
+  gert::git_reset_hard('origin/HEAD', repo = I(dirname))
 
   # Update the submodule and commit
   gert::git_add(dirname)
