@@ -43,7 +43,7 @@
     </userRemoteConfigs>
     <branches>
       <hudson.plugins.git.BranchSpec>
-        <name>*/master</name>
+        <name>:origin/(main|master)</name>
       </hudson.plugins.git.BranchSpec>
     </branches>
     <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
