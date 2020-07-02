@@ -17,7 +17,8 @@ sync_ropensci_jenkins <- function(update_jobs = FALSE, remove_jobs = TRUE, updat
   for(i in seq_len(nrow(packages))){
     name <- packages[i, "name"]
     git_url <- packages[i, "url"]
-    xml <- config_template(git_url)
+    build_branch <- packages[i, "default_branch"]
+    xml <- config_template(git_url, build_branch)
     if(name %in% jobs$name){
       job <- as.list(jobs[jobs$name == name,])
       if(isTRUE(update_jobs)){
@@ -209,11 +210,17 @@ parse_time <- function(str){
 #' @export
 #' @param git_url HTTPS git url of the target repository
 #' @rdname sync_ropensci
-config_template <- function(git_url){
+config_template <- function(git_url, build_branch = NULL){
+  build_branch <- if(length(build_branch) && !is.na(build_branch)){
+    paste0("*/", build_branch)
+  } else {
+    ':origin/(main|master)'
+  }
   if(!grepl("^https://", git_url))
     stop("Please use https git URL")
   template <- system.file('templates/config.xml', package = 'betty')
   input <- rawToChar(readBin(template, raw(), file.info(template)$size))
+  input <-  sub("INSERT_BUILD_BRANCH", build_branch, input, fixed = TRUE)
   gsub("INSERT_GIT_REPO_URL", git_url, input, fixed = TRUE)
 }
 
@@ -282,7 +289,7 @@ sync_ropensci_homepages <- function(){
 
 get_registry_index <- function(){
   packages <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry_urls.json")
-  names(packages) <- c("name", "url")
+  names(packages) <- c("name", "url", "default_branch")
   metadata <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")$packages
   metadata$url = NULL
   df <- merge(packages, y = metadata, by = 'name', all.x = TRUE)
