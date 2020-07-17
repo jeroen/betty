@@ -35,7 +35,7 @@ deploy_site <- function(path, deploy_org){
 
   # Todo: do we need git_commit_all() here?
   commit_for_ropensci(commit_message, info$commit$author, info$commit$time)
-  gert::git_remote_add('origin', deploy_remote)
+  gert::git_remote_add(url = deploy_remote)
   gert::git_branch_create("gh-pages")
 
   # Check if repo exists.
