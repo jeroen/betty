@@ -29,7 +29,7 @@
         <hudson.model.BooleanParameterDefinition>
           <name>UPDATE_UNIVERSE</name>
           <description>Update the universe repo.</description>
-          <defaultValue>true</defaultValue>
+          <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
