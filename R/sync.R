@@ -288,7 +288,7 @@ sync_ropensci_homepages <- function(){
 }
 
 get_registry_index <- function(){
-  packages <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry_urls.json")
+  packages <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/packages.json")
   names(packages) <- c("name", "url", "default_branch")
   metadata <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")$packages
   metadata$url = NULL
