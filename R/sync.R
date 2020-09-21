@@ -291,6 +291,7 @@ get_registry_index <- function(){
   packages <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/packages.json")
   names(packages) <- c("name", "url", "default_branch")
   metadata <- jsonlite::fromJSON("https://ropensci.github.io/roregistry/registry.json")$packages
+  metadata <- metadata[!grepl("https://github.com/ropensci-archive", metadata$url, fixed = TRUE),]
   metadata$url = NULL
   df <- merge(packages, y = metadata, by = 'name', all.x = TRUE)
   df$maintainer[is.na(df$maintainer)] = 'unknown'
