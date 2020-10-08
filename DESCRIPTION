@@ -15,7 +15,7 @@ Imports:
     tibble,
     dplyr,
     gh,
-    gert (>= 0.3.9000),
+    gert (>= 1.0),
     jenkins (>= 1.0.9100),
     jsonlite,
     remotes,
@@ -27,7 +27,6 @@ Imports:
     xml2,
     yaml
 Remotes:
-    r-lib/gert,
     ropensci/jenkins,
     ropensci/rotemplate
 RoxygenNote: 7.1.0.9000
