@@ -11,6 +11,9 @@ body {
 ul {
 	list-style-type: none;
 }
+.cc-revoke {
+	display: none !important;
+}
 </style>
 
 </head>
@@ -24,14 +27,12 @@ INSERT_REPO_LIST
 <script src="octokit-rest.min.js"></script>
 <script src="listrepos.js"></script>
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-462421-8"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'UA-462421-8');
-</script>
+<!-- Matomo -->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js" data-cfasync="false"></script>
+<script src="https://ropensci.org/scripts/matomo.js"></script>
+<noscript><p><img src="https://ropensci.matomo.cloud/matomo.php?idsite=1&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<!-- End Matomo Code -->
 
 </body>
 </html>
