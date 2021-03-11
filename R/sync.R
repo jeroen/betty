@@ -85,7 +85,7 @@ sync_ropensci_docs <- function(update_sitemap = TRUE){
   index <- get_registry_index()
   packages <- c(index$name, 'ropensci-docs.github.io')
   repos <- get_docs_repos()
-  added <- packages[!(packages %in% repos)]
+  added <- packages[!(tolower(packages) %in% tolower(repos))]
   message("Authenticated as", gh::gh_whoami()$name)
   if(length(added)){
     caterr("Adding new packages: ", paste(added, collapse = ', '), "\n")
@@ -93,7 +93,7 @@ sync_ropensci_docs <- function(update_sitemap = TRUE){
       lapply(added, create_new_docs_repo)
     }
   }
-  deleted <- repos[!(repos %in% packages)]
+  deleted <- repos[!(tolower(repos) %in% tolower(packages))]
   if(length(deleted)){
     caterr("Removed packages: ", paste(deleted, collapse = ', '), "\n")
     if(utils::askYesNo("are you sure you want to delete these?")){
